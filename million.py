@@ -32,13 +32,16 @@ import os
 import glob
 import csv
 import json
+import pprint
+
+pp = pprint.PrettyPrinter(indent=4)
 
 def open_h5_file_read(h5filename):
     """
     Open an existing H5 in read mode.
     Same function as in hdf5_utils, here so we avoid one import
     """
-    return tables.open_file(h5filename, mode='r')
+    return tables.open_file(h5filename, mode='r+')
 
 
 def get_num_songs(h5):
@@ -395,7 +398,7 @@ def apply_to_n_files(basedir, n, func=lambda x: x):
         for f in files :
             cnt += 1
             if cnt > n :
-                return
+                return n
             func(f)
     return cnt
 
@@ -408,21 +411,60 @@ with open('test.csv', 'wb') as csvfile:
         'energy',
         'loudness',
         'tempo',
-        #'segments_timbre' #TODO figure out how to further parse this
+        'segments_timbre'
     ]
-    writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-    writer.writeheader()
 
-    def write_to_csv(filename):
-        h5 = open_h5_file_read(filename)
-        n = get_num_songs(h5)
+    class Song(tables.IsDescription):
+        artist_name = tables.StringCol(32)
+        title = tables.StringCol(32)
+        year = tables.Int32Col()
+        danceability = tables.Float64Col()
+        energy = tables.Float64Col()
+        loudness = tables.Float64Col()
+        tempo = tables.Float64Col()
+        segments_timbre = tables.Int32Col()
+        # TODO extract lyric features
+
+    attrCounts = {}
+    for field in fieldnames:
+        attrCounts[field] = 0
+
+    def consolidateFields(filename):
+        h5File = open_h5_file_read(filename)
+
+        musicbrainz = h5File.root.musicbrainz.songs.coltypes
+        metadata = h5File.root.metadata.songs.coltypes
+        analysis = h5File.root.analysis.songs.coltypes
+        combined = musicbrainz.copy()
+        combined.update(metadata)
+        combined.update(analysis)
+
+        # create group/table for data we care about
+        # print h5File.root._v_children['dataGroup']
+        # h5File.root.dataGroup._g_remove(recursive=True, force=True)
+        # dataGroup = h5File.create_group(h5File.root, 'dataGroup', 'The fields we care about')
+        # dataTable = h5File.create_table(dataGroup, 'dataTable', Song)
+
+        # TODO delete the other groups
+
+        n = get_num_songs(h5File)
         for i in range(0, n):
-            # TODO cut songs with incomplete data
-            songData = {}
+            isValid = True
             for field in fieldnames:
-                data = globals()['get_' + field](h5, i);
-                songData[field] = data
-            writer.writerow(songData)
-        h5.close()
+                data = globals()['get_' + field](h5File, i)
+                # print field + ': ' + str(data)
+                if not hasattr(data, "__len__") and data == 0:
+                    isValid = False
+                else:
+                    attrCounts[field] = attrCounts[field] + 1;
 
-    print apply_to_n_files(os.path.normpath('./MillionSongSubset/data'), 1, write_to_csv)
+            if isValid:
+                # TODO write row to table
+                print 'Should write to table'
+            # else:
+            #     print 'missing something'
+
+        h5File.close()
+
+    print apply_to_n_files(os.path.normpath('/Users/kade/LocalDocs/MillionSongSubset2/data'), 100, consolidateFields)
+    pp.pprint(attrCounts)
