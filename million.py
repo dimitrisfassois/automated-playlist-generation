@@ -43,193 +43,78 @@ def open_h5_file_read(h5filename):
     """
     return tables.open_file(h5filename, mode='r+')
 
-
 def get_num_songs(h5):
     """
     Return the number of songs contained in this h5 file, i.e. the number of rows
     for all basic informations like name, artist, ...
     """
+    if not 'metadata' in h5.root._v_children:
+        return h5.root.dataGroup.dataTable.nrows
     return h5.root.metadata.songs.nrows
-
-def get_artist_latitude(h5,songidx=0):
-    """
-    Get artist latitude from a HDF5 song file, by default the first song in it
-    """
-    return h5.root.metadata.songs.cols.artist_latitude[songidx]
-
-def get_artist_longitude(h5,songidx=0):
-    """
-    Get artist longitude from a HDF5 song file, by default the first song in it
-    """
-    return h5.root.metadata.songs.cols.artist_longitude[songidx]
 
 def get_artist_location(h5,songidx=0):
     """
     Get artist location from a HDF5 song file, by default the first song in it
     """
+    if not 'metadata' in h5.root._v_children:
+        return h5.root.dataGroup.dataTable.cols.artist_location[songidx]
     return h5.root.metadata.songs.cols.artist_location[songidx]
 
 def get_artist_name(h5,songidx=0):
     """
     Get artist name from a HDF5 song file, by default the first song in it
     """
+    if not 'metadata' in h5.root._v_children:
+        return h5.root.dataGroup.dataTable.cols.artist_name[songidx]
     return h5.root.metadata.songs.cols.artist_name[songidx]
-
-def get_release(h5,songidx=0):
-    """
-    Get release from a HDF5 song file, by default the first song in it
-    """
-    return h5.root.metadata.songs.cols.release[songidx]
 
 def get_title(h5,songidx=0):
     """
     Get title from a HDF5 song file, by default the first song in it
     """
+    if not 'metadata' in h5.root._v_children:
+        return h5.root.dataGroup.dataTable.cols.title[songidx]
     return h5.root.metadata.songs.cols.title[songidx]
-
-def get_artist_terms(h5,songidx=0):
-    """
-    Get artist terms array. Takes care of the proper indexing if we are in aggregate
-    file. By default, return the array for the first song in the h5 file.
-    To get a regular numpy ndarray, cast the result to: numpy.array( )
-    """
-    if h5.root.metadata.songs.nrows == songidx + 1:
-        return h5.root.metadata.artist_terms[h5.root.metadata.songs.cols.idx_artist_terms[songidx]:]
-    return h5.root.metadata.artist_terms[h5.root.metadata.songs.cols.idx_artist_terms[songidx]:
-                                            h5.root.metadata.songs.cols.idx_artist_terms[songidx+1]]
-
-def get_artist_terms_freq(h5,songidx=0):
-    """
-    Get artist terms array frequencies. Takes care of the proper indexing if we are in aggregate
-    file. By default, return the array for the first song in the h5 file.
-    To get a regular numpy ndarray, cast the result to: numpy.array( )
-    """
-    if h5.root.metadata.songs.nrows == songidx + 1:
-        return h5.root.metadata.artist_terms_freq[h5.root.metadata.songs.cols.idx_artist_terms[songidx]:]
-    return h5.root.metadata.artist_terms_freq[h5.root.metadata.songs.cols.idx_artist_terms[songidx]:
-                                              h5.root.metadata.songs.cols.idx_artist_terms[songidx+1]]
-
-def get_artist_terms_weight(h5,songidx=0):
-    """
-    Get artist terms array frequencies. Takes care of the proper indexing if we are in aggregate
-    file. By default, return the array for the first song in the h5 file.
-    To get a regular numpy ndarray, cast the result to: numpy.array( )
-    """
-    if h5.root.metadata.songs.nrows == songidx + 1:
-        return h5.root.metadata.artist_terms_weight[h5.root.metadata.songs.cols.idx_artist_terms[songidx]:]
-    return h5.root.metadata.artist_terms_weight[h5.root.metadata.songs.cols.idx_artist_terms[songidx]:
-                                                h5.root.metadata.songs.cols.idx_artist_terms[songidx+1]]
-
-def get_analysis_sample_rate(h5,songidx=0):
-    """
-    Get analysis sample rate from a HDF5 song file, by default the first song in it
-    """
-    return h5.root.analysis.songs.cols.analysis_sample_rate[songidx]
 
 def get_danceability(h5,songidx=0):
     """
     Get danceability from a HDF5 song file, by default the first song in it
     """
+    if not 'metadata' in h5.root._v_children:
+        return h5.root.dataGroup.dataTable.cols.danceability[songidx]
     return h5.root.analysis.songs.cols.danceability[songidx]
-
-def get_duration(h5,songidx=0):
-    """
-    Get duration from a HDF5 song file, by default the first song in it
-    """
-    return h5.root.analysis.songs.cols.duration[songidx]
 
 def get_energy(h5,songidx=0):
     """
     Get energy from a HDF5 song file, by default the first song in it
     """
+    if not 'metadata' in h5.root._v_children:
+        return h5.root.dataGroup.dataTable.cols.energy[songidx]
     return h5.root.analysis.songs.cols.energy[songidx]
-
-def get_key(h5,songidx=0):
-    """
-    Get key from a HDF5 song file, by default the first song in it
-    """
-    return h5.root.analysis.songs.cols.key[songidx]
-
-def get_key_confidence(h5,songidx=0):
-    """
-    Get key confidence from a HDF5 song file, by default the first song in it
-    """
-    return h5.root.analysis.songs.cols.key_confidence[songidx]
-
-def get_loudness(h5,songidx=0):
-    """
-    Get loudness from a HDF5 song file, by default the first song in it
-    """
-    return h5.root.analysis.songs.cols.loudness[songidx]
-
-def get_mode(h5,songidx=0):
-    """
-    Get mode from a HDF5 song file, by default the first song in it
-    """
-    return h5.root.analysis.songs.cols.mode[songidx]
-
-def get_mode_confidence(h5,songidx=0):
-    """
-    Get mode confidence from a HDF5 song file, by default the first song in it
-    """
-    return h5.root.analysis.songs.cols.mode_confidence[songidx]
 
 def get_tempo(h5,songidx=0):
     """
     Get tempo from a HDF5 song file, by default the first song in it
     """
+    if not 'metadata' in h5.root._v_children:
+        return h5.root.dataGroup.dataTable.cols.tempo[songidx]
     return h5.root.analysis.songs.cols.tempo[songidx]
 
-def get_time_signature(h5,songidx=0):
+def get_song_id(h5,songidx=0):
     """
-    Get signature from a HDF5 song file, by default the first song in it
+    Get song id from a HDF5 song file, by default the first song in it
     """
-    return h5.root.analysis.songs.cols.time_signature[songidx]
+    if not 'metadata' in h5.root._v_children:
+        return h5.root.dataGroup.dataTable.cols.song_id[songidx]
+    return h5.root.metadata.songs.cols.song_id[songidx]
 
-def get_time_signature_confidence(h5,songidx=0):
+def get_year(h5, songidx=0):
     """
-    Get signature confidence from a HDF5 song file, by default the first song in it
+    Get release year from a HDF5 song file, by default the first song in it
     """
-    return h5.root.analysis.songs.cols.time_signature_confidence[songidx]
-
-def get_track_id(h5,songidx=0):
-    """
-    Get track id from a HDF5 song file, by default the first song in it
-    """
-    return h5.root.analysis.songs.cols.track_id[songidx]
-
-def get_segments_start(h5,songidx=0):
-    """
-    Get segments start array. Takes care of the proper indexing if we are in aggregate
-    file. By default, return the array for the first song in the h5 file.
-    To get a regular numpy ndarray, cast the result to: numpy.array( )
-    """
-    if h5.root.analysis.songs.nrows == songidx + 1:
-        return h5.root.analysis.segments_start[h5.root.analysis.songs.cols.idx_segments_start[songidx]:]
-    return h5.root.analysis.segments_start[h5.root.analysis.songs.cols.idx_segments_start[songidx]:
-                                           h5.root.analysis.songs.cols.idx_segments_start[songidx+1]]
-
-def get_segments_confidence(h5,songidx=0):
-    """
-    Get segments confidence array. Takes care of the proper indexing if we are in aggregate
-    file. By default, return the array for the first song in the h5 file.
-    To get a regular numpy ndarray, cast the result to: numpy.array( )
-    """
-    if h5.root.analysis.songs.nrows == songidx + 1:
-        return h5.root.analysis.segments_confidence[h5.root.analysis.songs.cols.idx_segments_confidence[songidx]:]
-    return h5.root.analysis.segments_confidence[h5.root.analysis.songs.cols.idx_segments_confidence[songidx]:
-                                                h5.root.analysis.songs.cols.idx_segments_confidence[songidx+1]]
-
-def get_segments_pitches(h5,songidx=0):
-    """
-    Get segments pitches array. Takes care of the proper indexing if we are in aggregate
-    file. By default, return the array for the first song in the h5 file.
-    To get a regular numpy ndarray, cast the result to: numpy.array( )
-    """
-    if h5.root.analysis.songs.nrows == songidx + 1:
-        return h5.root.analysis.segments_pitches[h5.root.analysis.songs.cols.idx_segments_pitches[songidx]:,:]
-    return h5.root.analysis.segments_pitches[h5.root.analysis.songs.cols.idx_segments_pitches[songidx]:
-                                             h5.root.analysis.songs.cols.idx_segments_pitches[songidx+1],:]
+    if not 'metadata' in h5.root._v_children:
+        return h5.root.dataGroup.dataTable.cols.year[songidx]
+    return h5.root.musicbrainz.songs.cols.year[songidx]
 
 def get_segments_timbre(h5,songidx=0):
     """
@@ -237,165 +122,29 @@ def get_segments_timbre(h5,songidx=0):
     file. By default, return the array for the first song in the h5 file.
     To get a regular numpy ndarray, cast the result to: numpy.array( )
     """
+    if not 'metadata' in h5.root._v_children:
+        segments_timbre = h5.root.dataGroup.segments_timbre
+        idx_segments_timbre = h5.root.dataGroup.dataTable.cols.idx_segments_timbre
+
+        if h5.root.dataGroup.dataTable.nrows == songidx + 1:
+            return segments_timbre[idx_segments_timbre[songidx]:,:]
+
+        return segments_timbre[idx_segments_timbre[songidx]:idx_segments_timbre[songidx+1],:]
+
+    segments_timbre = h5.root.analysis.segments_timbre
+    idx_segments_timbre = h5.root.analysis.songs.cols.idx_segments_timbre
+
     if h5.root.analysis.songs.nrows == songidx + 1:
-        return h5.root.analysis.segments_timbre[h5.root.analysis.songs.cols.idx_segments_timbre[songidx]:,:]
-    return h5.root.analysis.segments_timbre[h5.root.analysis.songs.cols.idx_segments_timbre[songidx]:
-                                            h5.root.analysis.songs.cols.idx_segments_timbre[songidx+1],:]
+        return segments_timbre[idx_segments_timbre[songidx]:,:]
 
-def get_segments_loudness_max(h5,songidx=0):
-    """
-    Get segments loudness max array. Takes care of the proper indexing if we are in aggregate
-    file. By default, return the array for the first song in the h5 file.
-    To get a regular numpy ndarray, cast the result to: numpy.array( )
-    """
-    if h5.root.analysis.songs.nrows == songidx + 1:
-        return h5.root.analysis.segments_loudness_max[h5.root.analysis.songs.cols.idx_segments_loudness_max[songidx]:]
-    return h5.root.analysis.segments_loudness_max[h5.root.analysis.songs.cols.idx_segments_loudness_max[songidx]:
-                                                  h5.root.analysis.songs.cols.idx_segments_loudness_max[songidx+1]]
-
-def get_segments_loudness_max_time(h5,songidx=0):
-    """
-    Get segments loudness max time array. Takes care of the proper indexing if we are in aggregate
-    file. By default, return the array for the first song in the h5 file.
-    To get a regular numpy ndarray, cast the result to: numpy.array( )
-    """
-    if h5.root.analysis.songs.nrows == songidx + 1:
-        return h5.root.analysis.segments_loudness_max_time[h5.root.analysis.songs.cols.idx_segments_loudness_max_time[songidx]:]
-    return h5.root.analysis.segments_loudness_max_time[h5.root.analysis.songs.cols.idx_segments_loudness_max_time[songidx]:
-                                                       h5.root.analysis.songs.cols.idx_segments_loudness_max_time[songidx+1]]
-
-def get_segments_loudness_start(h5,songidx=0):
-    """
-    Get segments loudness start array. Takes care of the proper indexing if we are in aggregate
-    file. By default, return the array for the first song in the h5 file.
-    To get a regular numpy ndarray, cast the result to: numpy.array( )
-    """
-    if h5.root.analysis.songs.nrows == songidx + 1:
-        return h5.root.analysis.segments_loudness_start[h5.root.analysis.songs.cols.idx_segments_loudness_start[songidx]:]
-    return h5.root.analysis.segments_loudness_start[h5.root.analysis.songs.cols.idx_segments_loudness_start[songidx]:
-                                                    h5.root.analysis.songs.cols.idx_segments_loudness_start[songidx+1]]
-
-def get_sections_start(h5,songidx=0):
-    """
-    Get sections start array. Takes care of the proper indexing if we are in aggregate
-    file. By default, return the array for the first song in the h5 file.
-    To get a regular numpy ndarray, cast the result to: numpy.array( )
-    """
-    if h5.root.analysis.songs.nrows == songidx + 1:
-        return h5.root.analysis.sections_start[h5.root.analysis.songs.cols.idx_sections_start[songidx]:]
-    return h5.root.analysis.sections_start[h5.root.analysis.songs.cols.idx_sections_start[songidx]:
-                                           h5.root.analysis.songs.cols.idx_sections_start[songidx+1]]
-
-def get_sections_confidence(h5,songidx=0):
-    """
-    Get sections confidence array. Takes care of the proper indexing if we are in aggregate
-    file. By default, return the array for the first song in the h5 file.
-    To get a regular numpy ndarray, cast the result to: numpy.array( )
-    """
-    if h5.root.analysis.songs.nrows == songidx + 1:
-        return h5.root.analysis.sections_confidence[h5.root.analysis.songs.cols.idx_sections_confidence[songidx]:]
-    return h5.root.analysis.sections_confidence[h5.root.analysis.songs.cols.idx_sections_confidence[songidx]:
-                                                h5.root.analysis.songs.cols.idx_sections_confidence[songidx+1]]
-
-def get_beats_start(h5,songidx=0):
-    """
-    Get beats start array. Takes care of the proper indexing if we are in aggregate
-    file. By default, return the array for the first song in the h5 file.
-    To get a regular numpy ndarray, cast the result to: numpy.array( )
-    """
-    if h5.root.analysis.songs.nrows == songidx + 1:
-        return h5.root.analysis.beats_start[h5.root.analysis.songs.cols.idx_beats_start[songidx]:]
-    return h5.root.analysis.beats_start[h5.root.analysis.songs.cols.idx_beats_start[songidx]:
-                                        h5.root.analysis.songs.cols.idx_beats_start[songidx+1]]
-
-def get_beats_confidence(h5,songidx=0):
-    """
-    Get beats confidence array. Takes care of the proper indexing if we are in aggregate
-    file. By default, return the array for the first song in the h5 file.
-    To get a regular numpy ndarray, cast the result to: numpy.array( )
-    """
-    if h5.root.analysis.songs.nrows == songidx + 1:
-        return h5.root.analysis.beats_confidence[h5.root.analysis.songs.cols.idx_beats_confidence[songidx]:]
-    return h5.root.analysis.beats_confidence[h5.root.analysis.songs.cols.idx_beats_confidence[songidx]:
-                                             h5.root.analysis.songs.cols.idx_beats_confidence[songidx+1]]
-
-def get_bars_start(h5,songidx=0):
-    """
-    Get bars start array. Takes care of the proper indexing if we are in aggregate
-    file. By default, return the array for the first song in the h5 file.
-    To get a regular numpy ndarray, cast the result to: numpy.array( )
-    """
-    if h5.root.analysis.songs.nrows == songidx + 1:
-        return h5.root.analysis.bars_start[h5.root.analysis.songs.cols.idx_bars_start[songidx]:]
-    return h5.root.analysis.bars_start[h5.root.analysis.songs.cols.idx_bars_start[songidx]:
-                                       h5.root.analysis.songs.cols.idx_bars_start[songidx+1]]
-
-def get_bars_confidence(h5,songidx=0):
-    """
-    Get bars start array. Takes care of the proper indexing if we are in aggregate
-    file. By default, return the array for the first song in the h5 file.
-    To get a regular numpy ndarray, cast the result to: numpy.array( )
-    """
-    if h5.root.analysis.songs.nrows == songidx + 1:
-        return h5.root.analysis.bars_confidence[h5.root.analysis.songs.cols.idx_bars_confidence[songidx]:]
-    return h5.root.analysis.bars_confidence[h5.root.analysis.songs.cols.idx_bars_confidence[songidx]:
-                                            h5.root.analysis.songs.cols.idx_bars_confidence[songidx+1]]
-
-def get_tatums_start(h5,songidx=0):
-    """
-    Get tatums start array. Takes care of the proper indexing if we are in aggregate
-    file. By default, return the array for the first song in the h5 file.
-    To get a regular numpy ndarray, cast the result to: numpy.array( )
-    """
-    if h5.root.analysis.songs.nrows == songidx + 1:
-        return h5.root.analysis.tatums_start[h5.root.analysis.songs.cols.idx_tatums_start[songidx]:]
-    return h5.root.analysis.tatums_start[h5.root.analysis.songs.cols.idx_tatums_start[songidx]:
-                                         h5.root.analysis.songs.cols.idx_tatums_start[songidx+1]]
-
-def get_tatums_confidence(h5,songidx=0):
-    """
-    Get tatums confidence array. Takes care of the proper indexing if we are in aggregate
-    file. By default, return the array for the first song in the h5 file.
-    To get a regular numpy ndarray, cast the result to: numpy.array( )
-    """
-    if h5.root.analysis.songs.nrows == songidx + 1:
-        return h5.root.analysis.tatums_confidence[h5.root.analysis.songs.cols.idx_tatums_confidence[songidx]:]
-    return h5.root.analysis.tatums_confidence[h5.root.analysis.songs.cols.idx_tatums_confidence[songidx]:
-                                              h5.root.analysis.songs.cols.idx_tatums_confidence[songidx+1]]
-
-def get_artist_mbtags(h5,songidx=0):
-    """
-    Get artist musicbrainz tag array. Takes care of the proper indexing if we are in aggregate
-    file. By default, return the array for the first song in the h5 file.
-    To get a regular numpy ndarray, cast the result to: numpy.array( )
-    """
-    if h5.root.musicbrainz.songs.nrows == songidx + 1:
-        return h5.root.musicbrainz.artist_mbtags[h5.root.musicbrainz.songs.cols.idx_artist_mbtags[songidx]:]
-    return h5.root.musicbrainz.artist_mbtags[h5.root.metadata.songs.cols.idx_artist_mbtags[songidx]:
-                                             h5.root.metadata.songs.cols.idx_artist_mbtags[songidx+1]]
-
-def get_artist_mbtags_count(h5,songidx=0):
-    """
-    Get artist musicbrainz tag count array. Takes care of the proper indexing if we are in aggregate
-    file. By default, return the array for the first song in the h5 file.
-    To get a regular numpy ndarray, cast the result to: numpy.array( )
-    """
-    if h5.root.musicbrainz.songs.nrows == songidx + 1:
-        return h5.root.musicbrainz.artist_mbtags_count[h5.root.musicbrainz.songs.cols.idx_artist_mbtags[songidx]:]
-    return h5.root.musicbrainz.artist_mbtags_count[h5.root.metadata.songs.cols.idx_artist_mbtags[songidx]:
-                                                   h5.root.metadata.songs.cols.idx_artist_mbtags[songidx+1]]
-
-def get_year(h5, songidx=0):
-    """
-    Get release year from a HDF5 song file, by default the first song in it
-    """
-    return h5.root.musicbrainz.songs.cols.year[songidx]
+    return segments_timbre[idx_segments_timbre[songidx]:idx_segments_timbre[songidx+1],:]
 
 def apply_to_n_files(basedir, n, func=lambda x: x):
     cnt = 0
     for root, dirs, files in os.walk(basedir):
         files = glob.glob(os.path.join(root, '*.h5'))
         for f in files :
+            print f
             cnt += 1
             if cnt > n :
                 return n
@@ -405,25 +154,26 @@ def apply_to_n_files(basedir, n, func=lambda x: x):
 with open('test.csv', 'wb') as csvfile:
     fieldnames = [
         'artist_name',
+        'artist_location',
         'title',
         'year',
         'danceability',
         'energy',
-        'loudness',
         'tempo',
-        'segments_timbre'
+        'song_id'
     ]
 
     class Song(tables.IsDescription):
         artist_name = tables.StringCol(32)
+        artist_location = tables.StringCol(32)
         title = tables.StringCol(32)
         year = tables.Int32Col()
         danceability = tables.Float64Col()
         energy = tables.Float64Col()
-        loudness = tables.Float64Col()
         tempo = tables.Float64Col()
-        segments_timbre = tables.Int32Col()
-        # TODO extract lyric features
+        idx_segments_timbre = tables.Int32Col()
+        song_id = tables.StringCol(32)
+        # TODO integrate lyric features
 
     attrCounts = {}
     for field in fieldnames:
@@ -432,39 +182,58 @@ with open('test.csv', 'wb') as csvfile:
     def consolidateFields(filename):
         h5File = open_h5_file_read(filename)
 
-        musicbrainz = h5File.root.musicbrainz.songs.coltypes
-        metadata = h5File.root.metadata.songs.coltypes
-        analysis = h5File.root.analysis.songs.coltypes
-        combined = musicbrainz.copy()
-        combined.update(metadata)
-        combined.update(analysis)
+        # create group/table/earray for data we care about
+        if not 'dataGroup' in h5File.root._v_children:
+            h5File.create_group(h5File.root, 'dataGroup', 'The fields we care about')
+        dataGroup = h5File.root.dataGroup
 
-        # create group/table for data we care about
-        # print h5File.root._v_children['dataGroup']
-        # h5File.root.dataGroup._g_remove(recursive=True, force=True)
-        # dataGroup = h5File.create_group(h5File.root, 'dataGroup', 'The fields we care about')
-        # dataTable = h5File.create_table(dataGroup, 'dataTable', Song)
+        if not 'dataTable' in dataGroup._v_children:
+            h5File.create_table(dataGroup, 'dataTable', Song)
+        dataTable = dataGroup.dataTable
 
-        # TODO delete the other groups
+        if 'segments_timbre' in dataGroup._v_children:
+            h5File.root.dataGroup.segments_timbre.remove()
 
+        if not 'segments_timbre' in dataGroup._v_children:
+            atom = tables.FloatAtom()
+            h5File.create_earray(dataGroup, 'segments_timbre', atom, (0,12))
+
+        dataSegmentsTimbre = dataGroup.segments_timbre
         n = get_num_songs(h5File)
+        curIdx = 0
         for i in range(0, n):
             isValid = True
+            song = dataTable.row
             for field in fieldnames:
                 data = globals()['get_' + field](h5File, i)
-                # print field + ': ' + str(data)
-                if not hasattr(data, "__len__") and data == 0:
+                song[field] = data
+                print field
+                print data
+                if (field == 'year' or field == 'tempo') and data == 0:
                     isValid = False
                 else:
                     attrCounts[field] = attrCounts[field] + 1;
 
-            if isValid:
-                # TODO write row to table
-                print 'Should write to table'
-            # else:
-            #     print 'missing something'
+            # if isValid:
+            if True:
+                print 'Writing new song'
+                segments_timbre = get_segments_timbre(h5File, i)
+                # set index
+                song['idx_segments_timbre'] = curIdx
+                # set timbre
+                dataSegmentsTimbre.append(segments_timbre)
+
+                song.append()
+                curIdx = curIdx + len(segments_timbre)
+
+        #remove the other tables
+        if 'metadata' in h5File.root._v_children:
+            h5File.root.musicbrainz._g_remove(recursive=True, force=True)
+            h5File.root.metadata._g_remove(recursive=True, force=True)
+            h5File.root.analysis._g_remove(recursive=True, force=True)
 
         h5File.close()
+        # TODO check for rows, delete file if none
 
-    print apply_to_n_files(os.path.normpath('/Users/kade/LocalDocs/MillionSongSubset2/data'), 100, consolidateFields)
+    print apply_to_n_files(os.path.normpath('/Users/kade/LocalDocs/MillionSongSubset2/data'), 1, consolidateFields)
     pp.pprint(attrCounts)
