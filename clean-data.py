@@ -34,6 +34,8 @@ import csv
 import json
 import pprint
 
+from sentiment import get_sentiment_score
+
 pp = pprint.PrettyPrinter(indent=4)
 
 def open_h5_file_read(h5filename):
@@ -151,8 +153,8 @@ def apply_to_n_files(basedir, n, func=lambda x: x):
             func(f)
     return cnt
 
-with open('test.csv', 'wb') as csvfile:
-    fieldnames = [
+def clean_data():
+    existingFieldnames = [
         'artist_name',
         'artist_location',
         'title',
@@ -173,10 +175,10 @@ with open('test.csv', 'wb') as csvfile:
         tempo = tables.Float64Col()
         idx_segments_timbre = tables.Int32Col()
         song_id = tables.StringCol(32)
-        # TODO integrate lyric features
+        sentiment_score = tables.Float64Col()
 
     attrCounts = {}
-    for field in fieldnames:
+    for field in existingFieldnames:
         attrCounts[field] = 0
 
     def consolidateFields(filename):
@@ -204,13 +206,15 @@ with open('test.csv', 'wb') as csvfile:
         for i in range(0, n):
             isValid = True
             song = dataTable.row
-            for field in fieldnames:
+            for field in existingFieldnames:
                 data = globals()['get_' + field](h5File, i)
                 song[field] = data
                 if (field == 'year' or field == 'tempo') and data == 0:
                     isValid = False
                 else:
                     attrCounts[field] = attrCounts[field] + 1;
+
+            song['sentiment_score'] = get_sentiment_score(get_song_id(h5File, i))
 
             if isValid:
                 print 'Writing valid song'
@@ -238,7 +242,7 @@ with open('test.csv', 'wb') as csvfile:
             print "No song(s) with good data, deleting"
             os.remove(filename)
 
-    print apply_to_n_files(os.path.normpath('/Users/kade/LocalDocs/MillionSongSubset2/data'), 10000, consolidateFields)
+    print apply_to_n_files(os.path.normpath('/Users/kade/LocalDocs/MillionSongSubset2/data'), 2, consolidateFields)
     # pp.pprint(attrCounts)
 
 def printLengths(filename):
@@ -249,3 +253,5 @@ def printLengths(filename):
 
 #PRINT OUT VARIABLE LENGTHS
 # apply_to_n_files(os.path.normpath('/Users/kade/LocalDocs/MillionSongSubset2/data'), 10000, printLengths)
+
+clean_data()
