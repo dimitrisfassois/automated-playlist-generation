@@ -144,10 +144,10 @@ def apply_to_n_files(basedir, n, func=lambda x: x):
     for root, dirs, files in os.walk(basedir):
         files = glob.glob(os.path.join(root, '*.h5'))
         for f in files :
-            print f
             cnt += 1
             if cnt > n :
                 return n
+            # print 'Looking through file: ' + f
             func(f)
     return cnt
 
@@ -164,9 +164,9 @@ with open('test.csv', 'wb') as csvfile:
     ]
 
     class Song(tables.IsDescription):
-        artist_name = tables.StringCol(32)
-        artist_location = tables.StringCol(32)
-        title = tables.StringCol(32)
+        artist_name = tables.StringCol(1024)
+        artist_location = tables.StringCol(1024)
+        title = tables.StringCol(1024)
         year = tables.Int32Col()
         danceability = tables.Float64Col()
         energy = tables.Float64Col()
@@ -182,23 +182,23 @@ with open('test.csv', 'wb') as csvfile:
     def consolidateFields(filename):
         h5File = open_h5_file_read(filename)
 
+        #this file has already been looked at. skip it
+        if 'dataGroup' in h5File.root._v_children:
+            print 'Skipping over file'
+            h5File.close()
+            return
+
         # create group/table/earray for data we care about
-        if not 'dataGroup' in h5File.root._v_children:
-            h5File.create_group(h5File.root, 'dataGroup', 'The fields we care about')
+        h5File.create_group(h5File.root, 'dataGroup', 'The fields we care about')
         dataGroup = h5File.root.dataGroup
 
-        if not 'dataTable' in dataGroup._v_children:
-            h5File.create_table(dataGroup, 'dataTable', Song)
+        h5File.create_table(dataGroup, 'dataTable', Song, expectedrows=5)
         dataTable = dataGroup.dataTable
 
-        if 'segments_timbre' in dataGroup._v_children:
-            h5File.root.dataGroup.segments_timbre.remove()
-
-        if not 'segments_timbre' in dataGroup._v_children:
-            atom = tables.FloatAtom()
-            h5File.create_earray(dataGroup, 'segments_timbre', atom, (0,12))
-
+        atom = tables.FloatAtom()
+        h5File.create_earray(dataGroup, 'segments_timbre', atom, (0,12))
         dataSegmentsTimbre = dataGroup.segments_timbre
+
         n = get_num_songs(h5File)
         curIdx = 0
         for i in range(0, n):
@@ -207,24 +207,23 @@ with open('test.csv', 'wb') as csvfile:
             for field in fieldnames:
                 data = globals()['get_' + field](h5File, i)
                 song[field] = data
-                print field
-                print data
                 if (field == 'year' or field == 'tempo') and data == 0:
                     isValid = False
                 else:
                     attrCounts[field] = attrCounts[field] + 1;
 
-            # if isValid:
-            if True:
-                print 'Writing new song'
+            if isValid:
+                print 'Writing valid song'
                 segments_timbre = get_segments_timbre(h5File, i)
                 # set index
                 song['idx_segments_timbre'] = curIdx
                 # set timbre
                 dataSegmentsTimbre.append(segments_timbre)
-
-                song.append()
+                dataSegmentsTimbre.flush()
                 curIdx = curIdx + len(segments_timbre)
+                song.append()
+
+        dataTable.flush()
 
         #remove the other tables
         if 'metadata' in h5File.root._v_children:
@@ -232,8 +231,21 @@ with open('test.csv', 'wb') as csvfile:
             h5File.root.metadata._g_remove(recursive=True, force=True)
             h5File.root.analysis._g_remove(recursive=True, force=True)
 
+        songCount = dataTable.nrows
         h5File.close()
-        # TODO check for rows, delete file if none
+        #delete the file if it doesn't have in data
+        if songCount == 0:
+            print "No song(s) with good data, deleting"
+            os.remove(filename)
 
-    print apply_to_n_files(os.path.normpath('/Users/kade/LocalDocs/MillionSongSubset2/data'), 1, consolidateFields)
-    pp.pprint(attrCounts)
+    print apply_to_n_files(os.path.normpath('/Users/kade/LocalDocs/MillionSongSubset2/data'), 10000, consolidateFields)
+    # pp.pprint(attrCounts)
+
+def printLengths(filename):
+    h5File = open_h5_file_read(filename)
+    if len(get_artist_location(h5File)) > 50:
+        print len(get_artist_location(h5File))
+    h5File.close()
+
+#PRINT OUT VARIABLE LENGTHS
+# apply_to_n_files(os.path.normpath('/Users/kade/LocalDocs/MillionSongSubset2/data'), 10000, printLengths)
