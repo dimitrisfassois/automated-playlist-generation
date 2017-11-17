@@ -47,7 +47,3 @@ def get_sentiment_score(song_id):
                 return 0
 
     f.close()
-
-print get_sentiment_score('TRFGMYQ128F4272650')
-print get_sentiment_score('TRAAONF128F92FDEE9')
-print get_sentiment_score('TRAAUAQ128F9340451')
