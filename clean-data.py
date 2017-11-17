@@ -176,6 +176,7 @@ def clean_data():
         idx_segments_timbre = tables.Int32Col()
         song_id = tables.StringCol(32)
         sentiment_score = tables.Float64Col()
+        # TODO popularity from spotify
 
     attrCounts = {}
     for field in existingFieldnames:
