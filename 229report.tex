@@ -1,0 +1,117 @@
+% Latex format built from IEEE Computer Society journal template
+% See https://www.ieee.org/conferences_events/conferences/publishing/templates.html
+% For full documentation
+\documentclass[10pt,journal,compsoc]{IEEEtran}
+% *** CITATION PACKAGES ***
+\usepackage{listings}
+\usepackage{cite}
+
+\newcommand\MYhyperrefoptions{bookmarks=true,bookmarksnumbered=true,
+pdfpagemode={UseOutlines},plainpages=false,pdfpagelabels=true,
+colorlinks=true,linkcolor={black},citecolor={black},urlcolor={black},
+pdftitle={Automated Playlist Generation},
+pdfsubject={Playlist Generation},
+pdfauthor={Kade Keith, Demetrios Fassois},
+pdfkeywords={Playlist Generation, Song Recommendation, Sentiment Analysis}}
+
+\begin{document}
+
+\title{Automated Playlist Generation\\}
+
+\author{
+  Kade~Keith,~\IEEEmembership{Student,~Stanford University - Computer Science Department,}
+  Demetrios~Fassois,~\IEEEmembership{Student,~Stanford University - Computer Science Department,}
+}
+
+% The paper headers
+\markboth{Final Project, CS229: Machine Learning Fall 2017}%
+{Evaluating Algorithmic Methods for Playing Chess}
+
+\IEEEtitleabstractindextext{
+\begin{abstract}
+TODO. FIRE PLAYLISTS.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Playlist Generation,
+Song Recommendation,
+Sentiment Analysis
+\end{IEEEkeywords}}
+
+% make the title area
+\maketitle
+
+\section{Motivation}
+
+\IEEEPARstart{I}{n} this project, TODO
+
+\subsection{Goal}
+TODO - WHAT WE ARE AFTER
+
+\section{Method}
+TODO - WHAT DATA WE GATHERED, HOW WE REPRESENTED IT, WHY, WHAT OUR TECHNIQUES WERE
+
+\section{Evaluation Method}
+TODO - HOW WE SCORE RESULTS
+
+\section{Preliminary experiments}
+TODO
+
+\subsection{KNN}
+TODO - KNN WITH DISTANCE FUNCTION
+
+\subsection{Regression}
+TODO - REGRESSION. PROLLY WITH SCIKIT LEARN
+
+\section{Results}
+
+\subsection{KNN}
+TODO - HOW'D IT DO?
+
+\subsection{Regression}
+TODO - HOW'D IT DO?
+
+\section{Next steps}
+TODO - WHAT'S NEXT
+
+\section{Contributions}
+TODO - WHO DID WHAT
+
+\begin{thebibliography}{9}
+
+\bibitem{chessrating}
+Wikipedia: Chess Rating System
+\\\texttt{https://en.wikipedia.org/wiki/Chess\_rating\_system}
+
+\bibitem{chessprogwiki}
+Chess  Programming Wiki
+\\\texttt{https://chessprogramming.wikispaces.com}
+\end{thebibliography}
+
+\begin{appendices}
+\section{EXAMPLE APPENDIX}
+The following is the output result of the script that tests for the end-game puzzles, looking for checkmate in 1, 2, or 3 move. \\
+
+\lstset{
+basicstyle=\small\ttfamily,
+columns=flexible,
+breaklines=true
+}
+\begin{lstlisting}
+Random
+Elapsed time is 0.0160000324249 seconds.
+Baseline
+Elapsed time is 0.294000148773 seconds.
+minimax1
+Elapsed time is 11.1240000725 seconds.
+AB1Plus1
+Elapsed time is 4.76499986649 seconds.
+\end{lstlisting}
+\end{appendices}
+
+% that's all folks
+\end{document}
+
+    Contact GitHub API Training Shop Blog About
+
+    © 2016 GitHub, Inc. Terms Privacy Security Status Help
