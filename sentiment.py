@@ -17,7 +17,7 @@ classifier = NaiveBayesClassifier.train(train_features)
 # create dict of words
 trainf = 'mxm_dataset_full.txt'
 f = open(trainf, 'r')
-for line in f.xreadlines():
+for line in f:
     if line == '':
         continue
     if line[0] == '%':

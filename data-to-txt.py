@@ -158,7 +158,7 @@ def apply_to_n_files(basedir, n, func=lambda x: x):
                 return n
             # print 'Looking through file: ' + f
             func(f)
-            print cnt
+            print(cnt)
     return cnt
 
 def clean_data():
@@ -198,25 +198,25 @@ def clean_data():
                 #TODO enhance with spotify data
 
                 if isValid:
-                    print 'Writing valid song'
+                    print('Writing valid song')
                     #write song to line in file
                     txt = encode_song(song)
                     out.write(txt + '\n')
                     didWrite = True
                 else:
                     # pp.pprint(song)
-                    print "Song missing some data. skipping"
+                    print("Song missing some data. skipping")
 
         # save output file
         h5File.close()
         out.close()
 
         #delete the hdf5 file
-        os.remove(filename)
-        if not didWrite:
-            os.remove(filename + '.txt')
+        #os.remove(filename)
+        #if not didWrite:
+            #os.remove(filename + '.txt')
 
-    print apply_to_n_files(os.path.normpath('/Users/kade/LocalDocs/MillionSongSubset2/data'), 400, toTxt)
+    print(apply_to_n_files(os.path.normpath('D:\\Docs\\Stanford - Mining Massive Datasets\\CS229\\Project\\MillionSongSubset\\data'), 400, toTxt))
     # pp.pprint(attrCounts)
 
 clean_data()

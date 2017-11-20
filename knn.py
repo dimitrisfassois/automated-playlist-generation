@@ -28,7 +28,7 @@ def distance(song1, song2):
 
 #load songs
 songs = []
-for root, dirs, files in os.walk('/Users/kade/LocalDocs/MillionSongSubset2/data'):
+for root, dirs, files in os.walk('D:\\Docs\\Stanford - Mining Massive Datasets\\CS229\\Project\\MillionSongSubset\\data'):
     files = glob.glob(os.path.join(root, '*.txt'))
     for f in files:
         with open(f, 'r') as inFile:
