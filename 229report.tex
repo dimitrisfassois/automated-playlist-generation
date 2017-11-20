@@ -50,7 +50,7 @@ Sentiment Analysis
 Using popular, human-curated playlists as our training data and test data, our system should construct playlists of similar quality. In particular, we plan to incorporate lyrical analysis in our model, as we believe that lyrical content is a big influence when creating playlists.
 
 \section{Method}
-We combine data from a number of sources in our project. The primary source is the Million Song Dataset \cite{msd} (MSD), and the corresponding lyrics dataset, which provided lyrics for roughly a quarter of those songs in a bag-of-words format. In addition to that we use Spotify \cite{spotify} as the source of our playlist data, as well as using their's and Last.fm's \cite{lastfm} song info to augment the data from the MSD.
+We combine data from a number of sources in our project. The primary source is the Million Song Dataset (MSD) \cite{msd}, and the corresponding lyrics dataset, which provides lyrics for roughly a quarter of those songs in a bag-of-words format. In addition to that we use Spotify \cite{spotify} as the source of our playlist data, as well as using their's and Last.fm's \cite{lastfm} song info to augment the data from the MSD.
 
 In total, that gives us the following the following group of attributes:
 \\\\
@@ -72,16 +72,16 @@ With these features, we approach the task two ways; first as a graph problem, an
 The first approach is to think of songs as nodes in a graph. With this you can apply k-nearest neighbors to find most similar songs given a seed or set of seeds. You can also think of a playlist as a path through this song graph. \cite{Alghoniemy01anetwork}
 
 \subsection{Classification}
-TODO
+The second is to think of deciding whether or not a song belongs on a playlist as a classification problem. Positive training examples are a subset of songs on the playlist. Negative examples are a random selection of songs not on the playlist. Then, presented with a previously unseen song, the model classifies it as either belonging on the playlist or not.
 
 \section{Evaluation Method}
-TODO - HOW WE SCORE RESULTS
+TODO - HOW WE SCORE RESULTS. CLASSIFICATION IS EASY - DOES SYSTEM GET IT RIGHT OR NOT
 
 \section{Preliminary experiments}
-TODO
+The bulk of our work thus far has been in data collection and processing. We have set up the complete pipeline for our model. We first combine our disparate data sets into a single set of feature for each song. At this step we also perform analysis on the lyrics. As a baseline we are just using Naive Bayes (with the NLTK movie review corpus as training data \cite{nltk}) to score each song as either positive or negative, which then gets included in the features
 
 \subsection{Graph Problem}
-TODO - KNN WITH DISTANCE FUNCTION
+The simplist graph approach is k nearest neighbors, which we have implemented. We represent each song as a point in TODO-dimensional space according to our normalized features of TODO.
 
 \subsection{Classification}
 TODO - REGRESSION. PROLLY WITH SCIKIT LEARN
@@ -95,7 +95,7 @@ TODO - HOW'D IT DO?
 TODO - HOW'D IT DO?
 
 \section{Next steps}
-TODO - WHAT'S NEXT
+TODO - WHAT'S NEXT. TALK ABOUT TIMBRE HERE. OTHER ADVANCED THINGS WE READ IN PAPERS. BETTER LYRICAL ANALYSIS.
 
 \subsection{Graph Problem}
 TODO - EXPLORING PLAYLIST AS PATH IN GRAPH
@@ -111,7 +111,7 @@ TODO - WHO DID WHAT
 
 \begin{appendices}
 \section{EXAMPLE APPENDIX}
-The following is the output result of the script that tests for the end-game puzzles, looking for checkmate in 1, 2, or 3 move. \\
+asdf asdfa sdf asdf\\
 
 \lstset{
 basicstyle=\small\ttfamily,
