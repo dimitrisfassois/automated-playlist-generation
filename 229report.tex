@@ -1,0 +1,140 @@
+% Latex format built from IEEE Computer Society journal template
+% See https://www.ieee.org/conferences_events/conferences/publishing/templates.html
+% For full documentation
+\documentclass[10pt,journal,compsoc]{IEEEtran}
+% *** CITATION PACKAGES ***
+\usepackage{listings}
+\usepackage{cite}
+\usepackage{url}
+
+\newcommand\MYhyperrefoptions{bookmarks=true,bookmarksnumbered=true,
+pdfpagemode={UseOutlines},plainpages=false,pdfpagelabels=true,
+colorlinks=true,linkcolor={black},citecolor={black},urlcolor={black},
+pdftitle={Automated Playlist Generation},
+pdfsubject={Playlist Generation},
+pdfauthor={Kade Keith, Demetrios Fassois},
+pdfkeywords={Playlist Generation, Song Recommendation, Sentiment Analysis}}
+
+\begin{document}
+
+\title{Automated Playlist Generation\\}
+
+\author{
+  Kade~Keith,~\IEEEmembership{Student,~Stanford University - Computer Science Department,}
+  Demetrios~Fassois,~\IEEEmembership{Student,~Stanford University - Computer Science Department}
+}
+
+% The paper headers
+\markboth{Final Project, CS229: Machine Learning Fall 2017}%
+{Evaluating Algorithmic Methods for Playing Chess}
+
+\IEEEtitleabstractindextext{
+\begin{abstract}
+Our project generates music playlists based on a set of seed songs, using diverse features ranging from lyrical sentiment to song popularity. We approach the problem as both a graph problem and as a classification problem, and evaluate our results based on real human-curated playlists.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Playlist Generation,
+Song Recommendation,
+Sentiment Analysis
+\end{IEEEkeywords}}
+
+% make the title area
+\maketitle
+
+\section{Motivation}
+
+\IEEEPARstart{W}{ith} the growth of musical streaming services, there are now more songs than ever at music listeners fingertips. Because of this growth, the art of constructing playlists has become increasingly challenging, and discovering new music the in the expanse of choices is a daunting task. For this reason, we seek to build an automatic playlist generator, that can take a few songs as a seed set, and generate a complete playlist for the listener.
+
+\subsection{Goal}
+Using popular, human-curated playlists as our training data and test data, our system should construct playlists of similar quality. A novel aspect of our project is that we incorporate lyrical analysis in our model, as we believe that lyrical content plays an important role when creating playlists.
+
+\section{Method}
+We combine data from a number of sources in our project. The primary source is the Million Song Dataset (MSD) \cite{msd}, and the corresponding lyrics dataset, which provides lyrics for roughly a quarter of those songs in a bag-of-words format. In addition to that we use Spotify \cite{spotify} as the source of our playlist data, as well as using their's and Last.fm's \cite{lastfm} song info to augment the data from the MSD.
+
+In total, that gives us the following the following group of attributes:
+\\\\
+\begin{tabular}{lll}
+Feature    & Value(s)       & Source          \\
+Year       & TODO-TODO      & MSD, Spotify    \\
+Tempo      & TODO-TODO      & MSD             \\
+TODO       & TODO           & TODO            \\
+TODO       & TODO           & TODO            \\
+TODO       & TODO           & TODO            \\
+TODO       & TODO           & TODO            \\
+\end{tabular}
+\\\\
+With these features, we approach the task two ways; first as a graph problem, and second as a classification problem.
+
+\subsection{Graph Problem}
+The first approach is to think of songs as nodes in a graph. With this you can apply k-nearest neighbors to find most similar songs given a seed or set of seeds. You can also think of a playlist as a path through this song graph. \cite{Alghoniemy01anetwork}
+
+\subsection{Classification}
+The second is to think of deciding whether or not a song belongs on a playlist as a classification problem. Positive training examples are a subset of songs on the playlist. Negative examples are a random selection of songs not on the playlist. Then, presented with a previously unseen song, the model classifies it as either belonging on the playlist or not.
+
+\section{Evaluation Method}
+TODO - HOW WE SCORE RESULTS. CLASSIFICATION IS EASY - DOES SYSTEM GET IT RIGHT OR NOT
+
+Given a subset of a playlist as a seed, evaluation is based on the comparison of our results with the actual remainder of the playlist.
+
+\section{Preliminary experiments}
+The bulk of our work thus far has been in data collection and processing. We have set up the complete pipeline for our model. We first combine our disparate data sets into a single set of feature for each song and filter out songs for which we insufficient data. At this step we also perform analysis on the lyrics. As a baseline we are just using Naive Bayes (with the NLTK movie review corpus as training data \cite{nltk}) to score each song as either positive or negative, which then gets included in the features
+
+TODO. PLAYLIST SCRAPING
+
+\subsection{Graph Problem}
+The simplest graph approach is k nearest neighbors, which we have implemented. We represent each song as a point in TODO-dimensional space according to our normalized features of TODO.
+
+\subsection{Classification}
+TODO - REGRESSION. PROLLY WITH SCIKIT LEARN
+
+\section{Results}
+
+\subsection{Graph Problem}
+TODO - HOW'D IT DO?
+
+\subsection{Classification}
+TODO - HOW'D IT DO?
+
+\section{Next steps}
+TODO - WHAT'S NEXT. FIGURE OUT HOW TO COMPARE TIMBRES (KERNEL)?. OTHER ADVANCED THINGS WE READ IN PAPERS. BETTER LYRICAL ANALYSIS.
+
+\subsection{Graph Problem}
+TODO - EXPLORING PLAYLIST AS PATH IN GRAPH
+
+\subsection{Classification}
+TODO - NOT SURE
+
+\section{Contributions}
+TODO - WHO DID WHAT
+
+\bibliography{lit}{}
+\bibliographystyle{plain}
+
+% \begin{appendices}
+% \section{EXAMPLE APPENDIX}
+% asdf asdfa sdf asdf\\
+%
+% \lstset{
+% basicstyle=\small\ttfamily,
+% columns=flexible,
+% breaklines=true
+% }
+% \begin{lstlisting}
+% Random
+% Elapsed time is 0.0160000324249 seconds.
+% Baseline
+% Elapsed time is 0.294000148773 seconds.
+% minimax1
+% Elapsed time is 11.1240000725 seconds.
+% AB1Plus1
+% Elapsed time is 4.76499986649 seconds.
+% \end{lstlisting}
+% \end{appendices}
+
+% that's all folks
+\end{document}
+
+    Contact GitHub API Training Shop Blog About
+
+    © 2016 GitHub, Inc. Terms Privacy Security Status Help

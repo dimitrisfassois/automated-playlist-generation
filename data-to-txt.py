@@ -216,7 +216,7 @@ def clean_data():
         if not didWrite:
             os.remove(filename + '.txt')
 
-    print apply_to_n_files(os.path.normpath('/Users/kade/LocalDocs/MillionSongSubset2/data'), 400, toTxt)
+    print apply_to_n_files(os.path.normpath('/Users/kade/LocalDocs/MillionSongSubset2/data'), 500, toTxt)
     # pp.pprint(attrCounts)
 
 clean_data()
