@@ -6,3 +6,5 @@ mxm_dataset_full.txt
 *.fls
 *.log
 *.synctex.gz
+*.bbl
+*.blg

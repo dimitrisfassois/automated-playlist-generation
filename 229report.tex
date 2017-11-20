@@ -5,6 +5,7 @@
 % *** CITATION PACKAGES ***
 \usepackage{listings}
 \usepackage{cite}
+\usepackage{url}
 
 \newcommand\MYhyperrefoptions{bookmarks=true,bookmarksnumbered=true,
 pdfpagemode={UseOutlines},plainpages=false,pdfpagelabels=true,
@@ -29,7 +30,7 @@ pdfkeywords={Playlist Generation, Song Recommendation, Sentiment Analysis}}
 
 \IEEEtitleabstractindextext{
 \begin{abstract}
-TODO.
+Our project generates music playlists based on a set of seed songs, using diverse features ranging from lyrical sentiment to song popularity. We approach the problem as both a graph problem and as a classification problem, and evaluate our results based on real human-curated playlists.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -68,7 +69,7 @@ TODO REGARDING TIMBRE, TALK ABOUT HOW TO COMPARE TIMBRES
 With these features, we approach the task two ways; first as a graph problem, and second as a classification problem.
 
 \subsection{Graph Problem}
-TODO
+The first approach is to think of songs as nodes in a graph. With this you can apply k-nearest neighbors to find most similar songs given a seed or set of seeds. You can also think of a playlist as a path through this song graph. \cite{Alghoniemy01anetwork}
 
 \subsection{Classification}
 TODO
@@ -105,21 +106,8 @@ TODO - NOT SURE
 \section{Contributions}
 TODO - WHO DID WHAT
 
-\begin{thebibliography}{9}
-
-\bibitem{msd}
-Million Song Dataset \\
-\texttt{https://labrosa.ee.columbia.edu/millionsong/}
-
-\bibitem{spotify}
-Spotify \\
-\texttt{https://www.spotify.com/}
-
-\bibitem{lastfm}
-Last.fm \\
-\texttt{https://www.last.fm/}
-
-\end{thebibliography}
+\bibliography{lit}{}
+\bibliographystyle{plain}
 
 \begin{appendices}
 \section{EXAMPLE APPENDIX}
