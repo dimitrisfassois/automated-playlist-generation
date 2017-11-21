@@ -44,7 +44,7 @@ def compute_overlap():
                 lines = [line.rstrip('\n') for line in inFile]
                 for line in lines:
                     song = decode_song(line)
-                    songs[song['artist_name'] + ', ' + song['title']] = True
+                    songs[(song['artist_name'] + ', ' + song['title']).lower()] = True
 
     for root, dirs, files in os.walk('./playlists'):
         files = glob.glob(os.path.join(root, '*.txt'))
@@ -52,13 +52,12 @@ def compute_overlap():
             with open(f, 'r') as inFile:
                 lines = [line.rstrip('\n') for line in inFile]
                 for line in lines:
-                    if line in songs:
+                    if line.lower() in songs:
                         hits = hits + 1
                     else:
                         misses = misses + 1
 
     print 'Hits: ' + str(hits)
     print 'Misses: ' + str(misses)
-
 
 compute_overlap()

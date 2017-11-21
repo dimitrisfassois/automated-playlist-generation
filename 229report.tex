@@ -44,7 +44,7 @@ Sentiment Analysis
 
 \section{Motivation}
 
-\IEEEPARstart{W}{ith} the growth of musical streaming services, there are now more songs than ever at music listeners fingertips. Because of this growth, the art of constructing playlists has become increasingly challenging, and discovering new music the in the expanse of choices is a daunting task. For this reason, we seek to build an automatic playlist generator, that can take a few songs as a seed set, and generate a complete playlist for the listener.
+\IEEEPARstart{W}{ith} the growth of music streaming services, there are now more songs than ever at music listeners fingertips. Because of this growth, the art of constructing playlists has become increasingly challenging, and discovering new music the in the expanse of choices is a daunting task. For this reason, we seek to build an automatic playlist generator, that can take a few songs as a seed set, and generate a complete playlist for the listener.
 
 \subsection{Goal}
 Using popular, human-curated playlists as our training data and test data, our system should construct playlists of similar quality. A novel aspect of our project is that we incorporate lyrical analysis in our model, as we believe that lyrical content plays an important role when creating playlists.
@@ -86,29 +86,33 @@ TODO - HOW WE SCORE RESULTS. CLASSIFICATION IS EASY - DOES SYSTEM GET IT RIGHT O
 Given a subset of a playlist as a seed, evaluation is based on the comparison of our results with the actual remainder of the playlist.
 
 \section{Preliminary experiments}
+
+\subsection{Data Gathering}
 The bulk of our work thus far has been in data collection and processing. We have set up the complete pipeline for our model using a small subset of the MSD. We first take the MSD and filter out the songs for which we do not have lyrics data. For those that we do, we perform preliminary analysis. As a baseline we are just using Naive Bayes (with the NLTK movie review corpus as training data \cite{nltk}) to score each song as either positive or negative, which then gets included in the features. After that, we enhance our data with audio features from Spotify and Last.fm.
 
 For gathering playlists, we rely on searching for a particular term, such as ``summer'' or ``love'', and saving the top playlists for that search. We have automated this process so that all we need to input is the term. Deciding which terms to search for provides an interesting sub-problem. In general, we want to avoid ``trending'' or ``hits'' playlists, because even though those are popular, they are not cohesive. We focus instead on themes that we believe users will make cohesive playlists about, such as emotions or seasons.
 
-\subsection{Graph Problem}
+Unfortunately the overlap of these two sets (the MSD with lyrics and the sampling of popular playlists) is not as high as we would like. Based on preliminary estimates, only 3-5\% of the MSD songs with lyrics are showing up in our popular playlists. I attribute this largely to the fact that Spotify surfaces modern songs over older ones, and the MSD is a few years old. Since that would only give us a couple hundred songs to work with, more gathering of lyrics data will be necessary. We plan to write scripts to automate this process. In addition, we will likely need to dig a little deeper to find more playlists.
+
+\subsection{Method: Graph Problem}
 The simplest graph approach is k nearest neighbors, which we have implemented. We represent each song as a point in 11-dimensional space according to our normalized features (all those listed above, excluding Timbre and Tags). Then we select the next songs for that playlist based on proximity to the seed.
 
-\subsection{Classification}
-As a classification baseline, we rely on SciKit Learn's linear regression implementation.
+\subsection{Method: Classification}
+As a classification baseline, we rely on SciKit Learn's (TODO CITE ME) linear regression implementation.
 
 \section{Results}
 
 \subsection{Graph Problem}
-TODO - HOW'D IT DO?
+TODO - HOW'D IT DO? HAND-PICKED EXAMPLES?
 
 \subsection{Classification}
-TODO - HOW'D IT DO?
+TODO - HOW'D IT DO? HAND-PICKED EXAMPLES?
 
 \section{Next steps}
-TODO - WHAT'S NEXT. FIGURE OUT HOW TO COMPARE TIMBRES (KERNEL)?. OTHER ADVANCED THINGS WE READ IN PAPERS. BETTER LYRICAL ANALYSIS.
+Besides what has already been mentioned (gathering more lyrics/playlists) we have a number of tasks remaining to enhance our model. First is utilizing Timbre information in a meaningful way (TODO - DESCRIBE IN MORE DETAIL). Second is more nuanced NLP methods on the song lyrics to provide more meaningful features than just sentiment, and third is expanding our two algorithms we are using to tackle the problem.
 
 \subsection{Graph Problem}
-TODO - EXPLORING PLAYLIST AS PATH IN GRAPH
+For the graph problem, a particularly interesting way to think about a playlists is as a path through a graph (TODO CITE ME). With this approach, you can pick a start song and an end song, and let the algorithm find the shortest path of some predetermined length between them. We believe this and similar approaches will create compelling playlists.
 
 \subsection{Classification}
 TODO - NOT SURE
