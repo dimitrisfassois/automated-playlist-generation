@@ -47,3 +47,5 @@ def get_sentiment_score(song_id):
                 return 0
 
     f.close()
+
+#TODO. Make version of this that runs on pre-processed dataset and updates

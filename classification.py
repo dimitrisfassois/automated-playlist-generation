@@ -22,7 +22,6 @@ for root, dirs, files in os.walk('/Users/kade/LocalDocs/MillionSongSubset2/data'
                 song.pop('artist_name', None)
                 songs.append(flatten_song(song))
 
-
 # arbitrary mock data
 x_train = songs[0:10]
 y_train = [ x % 2 for x in range(10)]

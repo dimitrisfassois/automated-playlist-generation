@@ -1,4 +1,4 @@
-keys = ['song_id', 'title', 'segments_timbre', 'energy', 'tempo', 'artist_name', 'sentiment_score', 'danceability', 'year']
+keys = ['song_id', 'title', 'segments_timbre', 'energy', 'tempo', 'artist_name', 'artist_latitude', 'danceability', 'year', 'sentiment_score', 'artist_longitude']
 delimiter = '|||'
 
 #song to txt
