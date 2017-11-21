@@ -10,14 +10,13 @@ client_credentials_manager = SpotifyClientCredentials(client_id='b2707e3822454b7
 sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
 
-searchResults = sp.search('summer', limit=10, type='playlist')
+searchResults = sp.search('breakup', limit=20, type='playlist')
 
 for i, playlist in enumerate(searchResults['playlists']['items']):
 
-    # with open('data.txt', 'w') as outfile:
-    #     json.dump(allTracks, outfile)
-    #     print 'SAVED ' + str(len(allTracks)) + ' TRACKS'
-    #     sys.exit()
+    # don't let weirdly named playlists mess things up
+    if '/' in playlist['name']:
+        continue
 
     print("%s %s" % (playlist['uri'],  playlist['name']))
 
