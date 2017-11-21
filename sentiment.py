@@ -17,35 +17,28 @@ classifier = NaiveBayesClassifier.train(train_features)
 # create dict of words
 trainf = 'mxm_dataset_full.txt'
 f = open(trainf, 'r')
+songs = {}
 for line in f.xreadlines():
-    if line == '':
+    if line == '' or line[0] == '#':
         continue
-    if line[0] == '%':
+    elif line[0] == '%':
         topwords = line.strip()[1:].split(',')
-        f.close()
-        break
+    else:
+        lineparts = line.strip().split(',')
+        bag = {}
+        for wordcnt in lineparts[2:]:
+            wordid, cnt = wordcnt.split(':')
+            # it's 1-based!
+            bag[topwords[int(wordid) - 1]] = True
+        songs[lineparts[0]] = bag
+f.close()
 
 def get_sentiment_score(song_id):
-    f = open(trainf, 'r')
-    cnt_lines = 0
-    for line in f.xreadlines():
-        if line == '' or line.strip() == '':
-            continue
-        if line[0] in ('#', '%'):
-            continue
-        lineparts = line.strip().split(',')
-        tid = lineparts[0]
-        if tid == song_id:
-            bag = {}
-            for wordcnt in lineparts[2:]:
-                wordid, cnt = wordcnt.split(':')
-                bag[topwords[int(wordid)]] = True
-            distribution = classifier.prob_classify(bag)
-            if distribution.prob('pos') > distribution.prob('neg'):
-                return 1
-            else:
-                return 0
-
-    f.close()
+    if song_id in songs:
+        distribution = classifier.prob_classify(songs[song_id])
+        if distribution.prob('pos') > distribution.prob('neg'):
+            return 1
+        else:
+            return 0
 
 #TODO. Make version of this that runs on pre-processed dataset and updates
