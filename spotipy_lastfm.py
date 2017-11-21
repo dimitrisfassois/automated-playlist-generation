@@ -52,6 +52,11 @@ for song in songs:
     result = sp.search(q="artist:%s track:%s" %(artistName, trackName), type="track", limit=1)
     if result['tracks']['items']:
         song['popularity'] = result['tracks']['items'][0]['popularity']
+        
+    song_uri = result['tracks']['items'][0]['uri']
+    audio_features = sp.audio_features(tracks=[song_uri])
+    
+    song['audio_features'] = audio_features
     params = {"api_key": last_fm_key, "track": trackName, "artist": artistName, "method":"track.getInfo", "user": last_fm_username} 
     r = requests.get('http://ws.audioscrobbler.com/2.0/', params=params)
     
