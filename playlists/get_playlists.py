@@ -9,8 +9,7 @@ pp = pprint.PrettyPrinter(indent=4)
 client_credentials_manager = SpotifyClientCredentials(client_id='b2707e3822454b72a26f8a321607727b', client_secret='2d543d57fa6747d798a3c595acde37bb')
 sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
-
-searchResults = sp.search('breakup', limit=20, type='playlist')
+searchResults = sp.search(sys.argv[1], limit=10, type='playlist')
 
 for i, playlist in enumerate(searchResults['playlists']['items']):
 

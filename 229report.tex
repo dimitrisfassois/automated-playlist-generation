@@ -50,18 +50,26 @@ Sentiment Analysis
 Using popular, human-curated playlists as our training data and test data, our system should construct playlists of similar quality. A novel aspect of our project is that we incorporate lyrical analysis in our model, as we believe that lyrical content plays an important role when creating playlists.
 
 \section{Method}
-We combine data from a number of sources in our project. The primary source is the Million Song Dataset (MSD) \cite{msd}, and the corresponding lyrics dataset, which provides lyrics for roughly a quarter of those songs in a bag-of-words format. In addition to that we use Spotify \cite{spotify} as the source of our playlist data, as well as using their's and Last.fm's \cite{lastfm} song info to augment the data from the MSD. Playlists are pulled from Spotify by searching for a particular term, such as ``summer'' or ``love'', and saving the top playlists for that search.
+We combine data from a number of sources in our project. The primary source is the Million Song Dataset (MSD) \cite{msd}, and the corresponding lyrics dataset, which provides lyrics for roughly a quarter of those songs in a bag-of-words format. In addition to that we use Spotify \cite{spotify} as the source of our playlist data, as well as using their's and Last.fm's \cite{lastfm} song info to augment the data from the MSD.
 
 In total, that gives us the following group of attributes:
 \\\\
 \begin{tabular}{lll}
-Feature    & Value(s)       & Source          \\
-Year       & TODO-TODO      & MSD, Spotify    \\
-Tempo      & TODO-TODO      & MSD             \\
-TODO       & TODO           & TODO            \\
-TODO       & TODO           & TODO            \\
-TODO       & TODO           & TODO            \\
-TODO       & TODO           & TODO            \\
+Feature           & Source          \\
+Year              & MSD, Spotify    \\
+Tempo             & MSD, Spotify    \\
+Timbre            & MSD             \\
+Tags              & Last.fm         \\
+Danceability      & MSD, Spotify    \\
+Energy            & MSD, Spotify    \\
+Loudness          & Spotify         \\
+Popularity        & Spotify         \\
+Speechiness       & Spotify         \\
+Acousticness      & Spotify         \\
+Instrumentalness  & Spotify         \\
+Liveness          & Spotify         \\
+Valence           & Spotify         \\
+
 \end{tabular}
 \\\\
 With these features, we approach the task two ways; first as a graph problem, and second as a classification problem.
@@ -78,15 +86,15 @@ TODO - HOW WE SCORE RESULTS. CLASSIFICATION IS EASY - DOES SYSTEM GET IT RIGHT O
 Given a subset of a playlist as a seed, evaluation is based on the comparison of our results with the actual remainder of the playlist.
 
 \section{Preliminary experiments}
-The bulk of our work thus far has been in data collection and processing. We have set up the complete pipeline for our model. We first combine our disparate data sets into a single set of feature for each song and filter out songs for which we insufficient data. At this step we also perform analysis on the lyrics. As a baseline we are just using Naive Bayes (with the NLTK movie review corpus as training data \cite{nltk}) to score each song as either positive or negative, which then gets included in the features
+The bulk of our work thus far has been in data collection and processing. We have set up the complete pipeline for our model using a small subset of the MSD. We first take the MSD and filter out the songs for which we do not have lyrics data. For those that we do, we perform preliminary analysis. As a baseline we are just using Naive Bayes (with the NLTK movie review corpus as training data \cite{nltk}) to score each song as either positive or negative, which then gets included in the features. After that, we enhance our data with audio features from Spotify and Last.fm.
 
-TODO. PLAYLIST SCRAPING
+For gathering playlists, we rely on searching for a particular term, such as ``summer'' or ``love'', and saving the top playlists for that search. We have automated this process so that all we need to input is the term. Deciding which terms to search for provides an interesting sub-problem. In general, we want to avoid ``trending'' or ``hits'' playlists, because even though those are popular, they are not cohesive. We focus instead on themes that we believe users will make cohesive playlists about, such as emotions or seasons.
 
 \subsection{Graph Problem}
-The simplest graph approach is k nearest neighbors, which we have implemented. We represent each song as a point in TODO-dimensional space according to our normalized features of TODO.
+The simplest graph approach is k nearest neighbors, which we have implemented. We represent each song as a point in 11-dimensional space according to our normalized features (all those listed above, excluding Timbre and Tags). Then we select the next songs for that playlist based on proximity to the seed.
 
 \subsection{Classification}
-TODO - REGRESSION. PROLLY WITH SCIKIT LEARN
+As a classification baseline, we rely on SciKit Learn's linear regression implementation.
 
 \section{Results}
 
