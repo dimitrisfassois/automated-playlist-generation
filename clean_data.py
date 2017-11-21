@@ -1,3 +1,10 @@
+"""
+Crawls a directory of hdf files, converting them to txts and removing songs
+for which we don't have lyrics
+
+@author: Kade Keith
+"""
+
 import tables
 import os
 import glob
@@ -77,8 +84,6 @@ def clean_data():
         'danceability',
         'energy',
         'tempo',
-        'artist_latitude',
-        'artist_longitude',
         'song_id'
     ]
 
