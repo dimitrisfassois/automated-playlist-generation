@@ -1,18 +1,8 @@
-from __future__ import division
-
 import os
 import glob
 from random import *
 
-from util import decode_song
-
-minTempo = 45.508
-maxTempo = 229.864
-minYear = 1959.0
-maxYear = 2009.0
-
-def normalize(val, minVal, maxVal):
-    return (float(val) - minVal) / maxVal
+from util import *
 
 def distance(song1, song2):
     d = 0
@@ -21,8 +11,8 @@ def distance(song1, song2):
         d += abs(float(song1[key]) - float(song2[key]))
 
     #normalize year and tempo
-    d += abs(normalize(song1['year'], minYear, maxYear) - normalize(song2['year'], minYear, maxYear))
-    d += abs(normalize(song1['tempo'], minTempo, maxTempo) - normalize(song2['tempo'], minTempo, maxTempo))
+    d += abs(normalize(song1['year'], MIN_YEAR, MAX_YEAR) - normalize(song2['year'], MIN_YEAR, MAX_YEAR))
+    d += abs(normalize(song1['tempo'], MIN_TEMPO, MAX_TEMPO) - normalize(song2['tempo'], MIN_TEMPO, MAX_TEMPO))
 
     return d
 
