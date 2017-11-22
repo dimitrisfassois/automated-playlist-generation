@@ -1,8 +1,22 @@
+from __future__ import division
+
 import os
 import glob
 from random import *
+import pandas as pd
 
-from util import *
+
+from util import decode_song
+
+output = pd.read_csv("D:\\Docs\\Stanford - Mining Massive Datasets\\CS229\\Project\\MillionSongSubset\\subset.csv")
+
+minTempo = 45.508
+maxTempo = 229.864
+minYear = 1959.0
+maxYear = 2009.0
+
+def normalize(val, minVal, maxVal):
+    return (float(val) - minVal) / maxVal
 
 def distance(song1, song2):
     d = 0
@@ -11,27 +25,29 @@ def distance(song1, song2):
         d += abs(float(song1[key]) - float(song2[key]))
 
     #normalize year and tempo
-    d += abs(normalize(song1['year'], MIN_YEAR, MAX_YEAR) - normalize(song2['year'], MIN_YEAR, MAX_YEAR))
-    d += abs(normalize(song1['tempo'], MIN_TEMPO, MAX_TEMPO) - normalize(song2['tempo'], MIN_TEMPO, MAX_TEMPO))
+    d += abs(normalize(song1['year'], minYear, maxYear) - normalize(song2['year'], minYear, maxYear))
+    d += abs(normalize(song1['tempo'], minTempo, maxTempo) - normalize(song2['tempo'], minTempo, maxTempo))
 
     return d
 
 #load songs
-songs = []
-for root, dirs, files in os.walk('/Users/kade/LocalDocs/MillionSongSubset2/data'):
-    files = glob.glob(os.path.join(root, '*.txt'))
-    for f in files:
-        with open(f, 'r') as inFile:
-            lines = [line.rstrip('\n') for line in inFile]
-            for line in lines:
-                song = decode_song(line)
-                songs.append(song)
+#songs = []
+#for root, dirs, files in os.walk('/Users/kade/LocalDocs/MillionSongSubset2/data'):
+#    files = glob.glob(os.path.join(root, '*.txt'))
+#    for f in files:
+#        with open(f, 'r') as inFile:
+#            lines = [line.rstrip('\n') for line in inFile]
+#            for line in lines:
+#                song = decode_song(line)
+#                songs.append(song)
+
 
 def knn(k, song):
     distances = []
     i = 0
-    for otherSong in songs:
-        if song == otherSong:
+    for index, _ in output.iterrows():
+        otherSong = output.iloc[index]
+        if song['title'] == otherSong['title'] and song['artist_name'] == otherSong['artist_name']:
             continue
         distances.append( (distance(song, otherSong), i))
         i = i + 1
@@ -40,9 +56,9 @@ def knn(k, song):
 
     neighbors = []
     for j in range(0,k):
-        neighbors.append(songs[distances[j][1]])
+        neighbors.append(output.loc[distances[j][1],'title'])
 
     return neighbors
 
-n = knn(4, songs[0])
+n = knn(4, output.iloc[0])
 print map(lambda x: x['title'], n)
