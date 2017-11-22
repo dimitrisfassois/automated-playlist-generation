@@ -20,9 +20,13 @@ def normalize(val, minVal, maxVal):
 
 def distance(song1, song2):
     d = 0
-    keys = ['energy', 'sentiment_score', 'danceability']
+    keys = ['energy', 'sentiment_score', 'danceability', 'popularity']
     for key in keys:
         d += abs(float(song1[key]) - float(song2[key]))
+    audio_features = ['acousticness','instrumentalness','liveness','loudness','speechiness', 'valence']
+    for feature in audio_features:
+        d += abs(float(song1['audio_features'][0][feature]) - float(song2['audio_features'][0][feature]))
+        
 
     #normalize year and tempo
     d += abs(normalize(song1['year'], minYear, maxYear) - normalize(song2['year'], minYear, maxYear))
