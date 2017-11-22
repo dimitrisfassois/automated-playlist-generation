@@ -49,7 +49,7 @@ for root, dirs, files in os.walk('D:\\Docs\\Stanford - Mining Massive Datasets\\
 
 # Add popularity from Spotify and tags from Last.fm                
 for song in songs:
-    x = ast.literal_eval(songs[0]['segments_timbre'])
+    song['segments_timbre'] = ast.literal_eval(song['segments_timbre'])
     artistName = song['artist_name']
     trackName = song['title']
     result = sp.search(q="artist:%s track:%s" %(artistName, trackName), type="track", limit=1)
@@ -90,3 +90,4 @@ for song in songs:
     song['tags'] = all_tags
 
 output = pd.DataFrame(songs)
+output.to_csv("D:\\Docs\\Stanford - Mining Massive Datasets\\CS229\\Project\\MillionSongSubset\\subset.csv")
