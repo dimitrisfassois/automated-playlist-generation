@@ -13,6 +13,8 @@ import os
 import glob
 from bs4 import BeautifulSoup
 import requests
+import pandas as pd
+import ast
 
 last_fm_username = "Muse_"
 last_fm_key = '48e2003d5cdcfa7cf07f3fdfc60d074d'
@@ -47,6 +49,7 @@ for root, dirs, files in os.walk('D:\\Docs\\Stanford - Mining Massive Datasets\\
 
 # Add popularity from Spotify and tags from Last.fm                
 for song in songs:
+    x = ast.literal_eval(songs[0]['segments_timbre'])
     artistName = song['artist_name']
     trackName = song['title']
     result = sp.search(q="artist:%s track:%s" %(artistName, trackName), type="track", limit=1)
@@ -57,6 +60,7 @@ for song in songs:
         audio_features = sp.audio_features(tracks=[song_uri])
     
         song['audio_features'] = audio_features
+    
     params = {"api_key": last_fm_key, "track": trackName, "artist": artistName, "method":"track.getInfo", "user": last_fm_username} 
     r = requests.get('http://ws.audioscrobbler.com/2.0/', params=params)
     
@@ -84,3 +88,5 @@ for song in songs:
     all_tags = list(set(tags).union(set(top_tags)))
     
     song['tags'] = all_tags
+
+output = pd.DataFrame(songs)
