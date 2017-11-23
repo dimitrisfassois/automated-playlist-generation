@@ -4,9 +4,7 @@ import os
 import glob
 from random import *
 import pandas as pd
-import json
 import ast
-import math
 
 from util import *
 
@@ -30,9 +28,6 @@ def distance(song1, song2):
     # not sure what I messed up, but there was some single quote double quote weirdness that this fixes
     song1_audio_features = ast.literal_eval(song1['audio_features'])[0]
     song2_audio_features = ast.literal_eval(song2['audio_features'])[0]
-
-    # print song1
-    # print song2
 
     for feature in audio_features:
         # normalize
