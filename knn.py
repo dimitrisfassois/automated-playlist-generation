@@ -14,6 +14,7 @@ def normalize(val, minVal, maxVal):
     return (float(val) - minVal) / maxVal
 
 def distance(song1, song2):
+
     if type(song2['audio_features']) is float:
         return float("inf")
 
@@ -55,9 +56,11 @@ def knn(k, song):
 
     neighbors = []
     for j in range(0,k):
-        neighbors.append(songs.loc[distances[j][1],'title'])
+        sng = str(songs.loc[distances[j][1],'artist_name']) + ', ' + str(songs.loc[distances[j][1],'title'])
+        neighbors.append(sng)
 
     return neighbors
 
-n = knn(4, songs.iloc[0])
+print songs.iloc[877]
+n = knn(4, songs.iloc[877])
 print n

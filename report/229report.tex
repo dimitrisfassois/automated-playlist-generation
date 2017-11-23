@@ -81,9 +81,7 @@ The first approach is to think of songs as nodes in a graph. With this you can a
 The second is to think of deciding whether or not a song belongs on a playlist as a classification problem. Positive training examples are a subset of songs on the playlist. Negative examples are a random selection of songs not on the playlist. Then, presented with a previously unseen song, the model classifies it as either belonging on the playlist or not.
 
 \section{Evaluation Method}
-TODO - HOW WE SCORE RESULTS. CLASSIFICATION IS EASY - DOES SYSTEM GET IT RIGHT OR NOT. TALK ABOUT CROSS VALIDATION.
-
-Given a subset of a playlist as a seed, evaluation is based on the comparison of our results with the actual remainder of the playlist.
+We plan to evaluate our two models with two different metrics. For the graph-based model, we can measure the distance from our proposed playlist songs to the actual songs on the playlist. In the best case that distance will be zero because the songs are the same. For the classification model, we present our model with previously unseen songs from the playlist we trained it on, and see if it correctly classifies those songs. In addition, we take a selection of songs that are not on the playlist and see if the model correctly classifies those. TODO TALK ABOUT CROSS VALIDATION.
 
 \section{Preliminary experiments}
 
@@ -103,9 +101,30 @@ The simplest graph approach is k nearest neighbors, which we have implemented. W
 As a classification baseline, we rely on SciKit Learn's \cite{scikit} linear regression implementation. For now we have hand-picked a subset of the MSD and fed that in as our playlist.
 
 \section{Results}
+Of the MSD subset, roughly 25\% of the songs had lyrics, giving us 2,500 songs to choose from in our preliminary experiments. The subset was chosen at random from the whole dataset. One issue as you can see though is an imbalance in the dataset in terms of genre. There are far more Rock and Pop tracks than their are Hip Hop or Country. This manifests in our algorithm struggling when it comes to the less-well represented genres.
 
 \subsection{Graph Problem}
-TODO - HOW'D IT DO? HAND-PICKED EXAMPLES?
+We present a couple example playlists given their seed song.
+\begin{lstlisting}
+Seed: Aerosmith, Milkcow Blues
+KNN playlist:
+Aiden, She Will Love You (Album Version)
+Vixen, American Dream
+Gary Moore, All Your Love [Live 1999]
+Snow Patrol, Half The Fun
+\end{lstlisting}
+We weren't familiar with many of these bands, but after giving them a listen can confirm they are all rock tracks with the signature distorted guitars and clashing cymbals akin to their seed.
+
+Now when given a Hip Hop seed, this approach produced a laughably diverse playlist.
+\begin{lstlisting}
+Seed: RUN-DMC, Can I Get A Witness
+KNN playlist:
+Daniel Johnston, Story Of An Artist (Don't Be Scared)
+Roy Brown, Good Rocking Tonight
+Michelle Tumes, Christe Eleison (Christ Have Mercy)
+De La Ghetto, Es dificil
+\end{lstlisting}
+In this list we have a lo-fi singer-songwriter, a classic R\&B artist, Contemporary Christian musician, and a Reggaeton artist. We believe that Hip Hop is a genre that serves to benefit a lot from incorporating further lyrical analysis in our model.
 
 \subsection{Classification}
 TODO - HOW'D IT DO? HAND-PICKED EXAMPLES?
@@ -120,11 +139,9 @@ For the graph version problem, a particularly interesting way to think about a p
 The initial effort for improving the classification version of the task will be in improving the features as previously mentioned. Beyond that, the obvious improvement is to use a non-linear regression model since the assumption our data is linearly separable is problematic.
 
 \section{Contributions}
-TODO:
+Kade was responsible for the initial pre-processing of the dataset to remove songs with incomplete data. He also implemented the baselines for sentiment analysis, k-nearest-neighbors, and linear regression classification. He was the primary author of the report.
 
-KADE - REMOVING SONGS WE DON'T HAVE LYRICS FOR AND FIELDS WE DON'T CARE ABOUT, BASELINE SENTIMENT ANALYSIS, KNN, AND REGRESSION, WROTE REPORT
-
-DEMETRIOS - AUGMENTING MSD DATA WITH SPOTIFY DATA, CROSS VALIDATION
+TODO DEMETRIOS - AUGMENTING MSD DATA WITH SPOTIFY DATA, CROSS VALIDATION
 
 \bibliography{lit}{}
 \bibliographystyle{plain}
