@@ -1,8 +1,14 @@
 import os
 import glob
+import ast
 
 keys = ['song_id', 'title', 'segments_timbre', 'artist_name', 'sentiment_score', 'year']
 delimiter = '|||'
+
+MIN_TEMPO = 45.508
+MAX_TEMPO = 229.864
+MIN_YEAR = 1959.0
+MAX_YEAR = 2009.0
 
 #song to txt
 def encode_song(song):
@@ -23,14 +29,20 @@ def normalize(val, minVal, maxVal):
 
 def flatten_song(song):
     songArray = []
-    for key in song:
-        songArray.append(float(song[key]))
-    return songArray
+    songArray.append(float(song['sentiment_score']))
+    songArray.append(float(song['popularity']))
 
-MIN_TEMPO = 45.508
-MAX_TEMPO = 229.864
-MIN_YEAR = 1959.0
-MAX_YEAR = 2009.0
+    audio_features = ['acousticness', 'tempo', 'instrumentalness', 'liveness', 'speechiness', 'valence', 'danceability']
+    song_audio_features = ast.literal_eval(song['audio_features'])[0]
+
+    for feature in audio_features:
+        # normalize
+        if feature == 'tempo':
+            songArray.append(normalize(song_audio_features['tempo'], MIN_TEMPO, MAX_TEMPO))
+        else:
+            songArray.append(float(song_audio_features[feature]))
+
+    return songArray
 
 # how much overlap is there in our playlists and the MSD
 def compute_overlap():
@@ -57,7 +69,7 @@ def compute_overlap():
                     else:
                         misses = misses + 1
 
-# 
+#
 # import pandas as pd
 # songs = pd.read_csv("/Users/kade/LocalDocs/MillionSongSubset/subset.csv")
 # names = []

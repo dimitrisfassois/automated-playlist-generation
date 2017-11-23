@@ -113,6 +113,6 @@ def clean_data():
         if not didWrite:
             os.remove(filename + '.txt')
 
-    print apply_to_n_files(os.path.normpath('/Users/kade/LocalDocs/MillionSongSubset'), 10000, toTxt)
+    apply_to_n_files(os.path.normpath('/Volumes/TIME/msd/C'), 10000000, toTxt)
 
 clean_data()
