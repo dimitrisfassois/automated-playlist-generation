@@ -1,7 +1,7 @@
 import os
 import glob
 
-keys = ['song_id', 'title', 'segments_timbre', 'energy', 'tempo', 'artist_name', 'sentiment_score', 'danceability', 'year']
+keys = ['song_id', 'title', 'segments_timbre', 'artist_name', 'sentiment_score', 'year']
 delimiter = '|||'
 
 #song to txt
@@ -56,8 +56,3 @@ def compute_overlap():
                         hits = hits + 1
                     else:
                         misses = misses + 1
-
-    print 'Hits: ' + str(hits)
-    print 'Misses: ' + str(misses)
-
-compute_overlap()

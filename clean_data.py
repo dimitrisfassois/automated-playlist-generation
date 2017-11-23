@@ -36,15 +36,6 @@ def get_artist_name(h5,songidx=0):
 def get_title(h5,songidx=0):
     return h5.root.metadata.songs.cols.title[songidx]
 
-def get_danceability(h5,songidx=0):
-    return h5.root.analysis.songs.cols.danceability[songidx]
-
-def get_energy(h5,songidx=0):
-    return h5.root.analysis.songs.cols.energy[songidx]
-
-def get_tempo(h5,songidx=0):
-    return h5.root.analysis.songs.cols.tempo[songidx]
-
 def get_song_id(h5,songidx=0):
     return h5.root.metadata.songs.cols.song_id[songidx]
 
@@ -81,9 +72,6 @@ def clean_data():
         'artist_name',
         'title',
         'year',
-        'danceability',
-        'energy',
-        'tempo',
         'song_id'
     ]
 
@@ -125,6 +113,6 @@ def clean_data():
         if not didWrite:
             os.remove(filename + '.txt')
 
-    print apply_to_n_files(os.path.normpath('/Users/kade/LocalDocs/MillionSongSubset2/data'), 500, toTxt)
+    print apply_to_n_files(os.path.normpath('/Users/kade/LocalDocs/MillionSongSubset'), 10000, toTxt)
 
 clean_data()

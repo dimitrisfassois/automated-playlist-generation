@@ -1,3 +1,5 @@
+from __future__ import division
+
 # -*- coding: utf-8 -*-
 """
 Created on Sat Nov 18 14:36:49 2017
@@ -15,12 +17,14 @@ from bs4 import BeautifulSoup
 import requests
 import pandas as pd
 import ast
+import pprint
+pp = pprint.PrettyPrinter(indent=4)
 
 last_fm_username = "Muse_"
 last_fm_key = '48e2003d5cdcfa7cf07f3fdfc60d074d'
 
-API_URL = "http://ws.audioscrobbler.com/2.0/" 
-params = {"api_key": last_fm_key} 
+API_URL = "http://ws.audioscrobbler.com/2.0/"
+params = {"api_key": last_fm_key}
 r = requests.get('http://ws.audioscrobbler.com/2.0/', params=params)
 
 html = BeautifulSoup(r.text)
@@ -38,7 +42,7 @@ result['tracks']['items'][0]['popularity']
 
 #load songs
 songs = []
-for root, dirs, files in os.walk('D:\\Docs\\Stanford - Mining Massive Datasets\\CS229\\Project\\MillionSongSubset\\data'):
+for root, dirs, files in os.walk('/Users/kade/LocalDocs/MillionSongSubset'):
     files = glob.glob(os.path.join(root, '*.txt'))
     for f in files:
         with open(f, 'r') as inFile:
@@ -47,47 +51,51 @@ for root, dirs, files in os.walk('D:\\Docs\\Stanford - Mining Massive Datasets\\
                 song = decode_song(line)
                 songs.append(song)
 
-# Add popularity from Spotify and tags from Last.fm                
+# Add popularity from Spotify and tags from Last.fm
+i = 0
 for song in songs:
+    print str(i) + '/' + str(len(songs))
+    print song['title']
+    i = i + 1
+
     song['segments_timbre'] = ast.literal_eval(song['segments_timbre'])
     artistName = song['artist_name']
     trackName = song['title']
     result = sp.search(q="artist:%s track:%s" %(artistName, trackName), type="track", limit=1)
+
     if result['tracks']['items']:
-        song['popularity'] = result['tracks']['items'][0]['popularity']
-        
-        song_uri = result['tracks']['items'][0]['uri']
-        audio_features = sp.audio_features(tracks=[song_uri])
-    
-        song['audio_features'] = audio_features
-    
-    params = {"api_key": last_fm_key, "track": trackName, "artist": artistName, "method":"track.getInfo", "user": last_fm_username} 
+        topResult = result['tracks']['items'][0]
+
+        song['popularity'] = topResult['popularity'] / 100
+        song_uri = topResult['uri']
+
+        song['audio_features'] = sp.audio_features(tracks=[song_uri])
+        album = sp.album(topResult['album']['uri'])
+
+        song['release_date'] = album['release_date']
+        song['release_date_precision'] = album['release_date_precision']
+
+    params = {"api_key": last_fm_key, "track": trackName, "artist": artistName, "method":"track.getInfo", "user": last_fm_username}
     r = requests.get('http://ws.audioscrobbler.com/2.0/', params=params)
-    
+
     top_tags = []
     tags = []
-    
+
     html = BeautifulSoup(r.text)
     for tag in html.findAll('tag'):
         tag = tag.find('name').contents
-        '''
-        page = urllib2.urlopen(url)
-        soup = BeautifulSoup(page.read())
-        mydiv = soup.find("h1", { "class" : "header-title" }).contents
-        clean_tag = mydiv[0].strip()
-        '''
         top_tags.extend(tag)
-            
-    params = {"api_key": last_fm_key, "track": trackName, "artist": artistName, "method":"track.getTags", "user": last_fm_username} 
+
+    params = {"api_key": last_fm_key, "track": trackName, "artist": artistName, "method":"track.getTags", "user": last_fm_username}
     r = requests.get('http://ws.audioscrobbler.com/2.0/', params=params)
     for tag in html.findAll('tag'):
         tag = tag.find('name').contents
         if tag:
             tags.extend(tag)
-            
+
     all_tags = list(set(tags).union(set(top_tags)))
-    
+
     song['tags'] = all_tags
 
 output = pd.DataFrame(songs)
-output.to_csv("D:\\Docs\\Stanford - Mining Massive Datasets\\CS229\\Project\\MillionSongSubset\\subset.csv")
+output.to_csv("/Users/kade/LocalDocs/MillionSongSubset/subset.csv")
