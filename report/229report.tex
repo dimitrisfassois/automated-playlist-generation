@@ -81,7 +81,7 @@ The first approach is to think of songs as nodes in a graph. With this you can a
 The second is to think of deciding whether or not a song belongs on a playlist as a classification problem. Positive training examples are a subset of songs on the playlist. Negative examples are a random selection of songs not on the playlist. Then, presented with a previously unseen song, the model classifies it as either belonging on the playlist or not.
 
 \section{Evaluation Method}
-We plan to evaluate our two models with two different metrics. For the graph-based model, we can measure the distance from our proposed playlist songs to the actual songs on the playlist. In the best case that distance will be zero because the songs are the same. For the classification model, we present our model with previously unseen songs from the playlist we trained it on, and see if it correctly classifies those songs. In addition, we take a selection of songs that are not on the playlist and see if the model correctly classifies those. TODO TALK ABOUT CROSS VALIDATION.
+We plan to evaluate our two models with two different metrics. For the graph-based model, we can measure the distance from our proposed playlist songs to the actual songs on the playlist. In the best case that distance will be zero because the songs are the same. For the classification model, we present our model with previously unseen songs from the playlist we trained it on, and see if it correctly classifies those songs. In addition, we take a selection of songs that are not on the playlist and see if the model correctly classifies those. In order to compare between different models' performance and optimize their hyper-parameters we'll use K-fold cross validation with grid search for the parameters. For the best model evaluation we'll use metrics from the confusion matrix such as precision, recall, accuracy and the F1 score. For further model evaluation we'll also use validation curves, the ROC curve. We'll explore validation curves for balancing the model's bias against its variance.
 
 \section{Preliminary experiments}
 
@@ -189,7 +189,7 @@ The initial effort for improving the classification version of the task will be 
 \section{Contributions}
 Kade was responsible for the initial pre-processing of the dataset to remove songs with incomplete data. He also implemented the baselines for sentiment analysis, k-nearest-neighbors, and linear regression classification, and the initial pipeline of scripts for tying the whole system together. He was the primary author of the report, and ran the experiments to find the reported results.
 
-TODO DEMETRIOS - AUGMENTING MSD DATA WITH SPOTIFY DATA, ENHANCED MODELS TO USE NEW FEATURES, CROSS VALIDATION, TIMBRE
+Demetrios was responsible for augmenting the MSD data with additional API data from Spotify and Last.fm. He was also responsible for creating the model and cross validation pipeline for choosing and evaluating the best model. He is also looking into different time series modeling techniques for the timbre data for each song, a specific feature that refers to the song's dynamic tone.
 
 \bibliography{lit}{}
 \bibliographystyle{plain}
