@@ -127,7 +127,55 @@ De La Ghetto, Es dificil
 In this list we have a lo-fi singer-songwriter, a classic R\&B artist, Contemporary Christian musician, and a Reggaeton artist. We believe that Hip Hop is a genre that serves to benefit a lot from incorporating further lyrical analysis in our model.
 
 \subsection{Classification}
-TODO - HOW'D IT DO? HAND-PICKED EXAMPLES?
+As an example of the classification approach, we train ($y=1$) the model on all of the songs of a particular artist (first Aerosmith and then Bon Jovi), excluding one song. For our negative examples ($y=0$), we select a random subset of the remaining songs. Unfortunately since we are just using the small subset, this means we only have 6/7 positive examples. Shown below are some results.
+
+\begin{lstlisting}
+Seed: 7 Aerosmith Songs
+Scores:
+Winds Of Plague, Origins And Endings:
+0.386695109939
+The Ataris, Make It Last:
+0.44327217148
+Sweet, Neon Psychedelia:
+0.948058795077
+Funeral For A Friend, Your Revolution Is A Joke:
+0.0841323790295
+The Black Crowes, Good Morning Captain:
+0.299697761404
+Aerosmith, Reefer Head Woman:
+1.47295049055
+Neil Diamond, Brooklyn On A Saturday Night:
+1.07268129368
+OV7, Volvere:
+-0.399370795516
+Tha Liks, Da Da Da Da:
+-0.339378432386
+\end{lstlisting}
+As expected, the remaining Aerosmith song is highly positive. Also the most negative songs, ``Volvere'' and ``Da Da Da Da'' are by a Mexican pop group and a Hip Hop trio, which are quite different, so those scores are as also expected.
+
+\begin{lstlisting}
+Seed: 6 Bon Jovi Songs
+Scores:
+Johnny Horton, The Golden Rocket:
+0.71933531467
+Roger Miller, Husbands And Wives:
+-0.0658498377106
+Andy & Lucas, Hasta Los Huesos:
+-0.10891481801
+Hot Tuna, Hesitation Blues:
+-0.346326437273
+Olga Tañón, Como Olvidar (Merengue Versión):
+-0.101924816847
+Nick Cave & The Bad Seeds, New Morning (Live):
+0.357192781716
+Bon Jovi, Only Lonely:
+-0.258888975598
+Frost, Take a Ride:
+0.128365501962
+Christina Aguilera, Cruz:
+-0.66089836728
+\end{lstlisting}
+The Bon Jovi playlist did not fair as well. The remaining Bon Jovi song was given a surprising negative score. From looking at the audio features of the seeds and that song manually, nothing jumped out at us that explained the difference. One reassuring thing is that in general it seems like songs got more negative scores with this dataset, so it is likely a data problem.
 
 \section{Next steps}
 Besides what has already been mentioned (gathering more lyrics/playlists) we have a number of tasks remaining to enhance our model. First is utilizing Timbre information in a meaningful way (TODO - DESCRIBE IN MORE DETAIL). Second is more advanced NLP methods on the song lyrics to provide more meaningful features than just sentiment, and third is expanding the two models we are using to tackle the problem.
@@ -139,9 +187,9 @@ For the graph version problem, a particularly interesting way to think about a p
 The initial effort for improving the classification version of the task will be in improving the features as previously mentioned. Beyond that, the obvious improvement is to use a non-linear regression model since the assumption our data is linearly separable is problematic.
 
 \section{Contributions}
-Kade was responsible for the initial pre-processing of the dataset to remove songs with incomplete data. He also implemented the baselines for sentiment analysis, k-nearest-neighbors, and linear regression classification. He was the primary author of the report.
+Kade was responsible for the initial pre-processing of the dataset to remove songs with incomplete data. He also implemented the baselines for sentiment analysis, k-nearest-neighbors, and linear regression classification, and the initial pipeline of scripts for tying the whole system together. He was the primary author of the report, and ran the experiments to find the reported results.
 
-TODO DEMETRIOS - AUGMENTING MSD DATA WITH SPOTIFY DATA, CROSS VALIDATION
+TODO DEMETRIOS - AUGMENTING MSD DATA WITH SPOTIFY DATA, ENHANCED MODELS TO USE NEW FEATURES, CROSS VALIDATION, TIMBRE
 
 \bibliography{lit}{}
 \bibliographystyle{plain}
