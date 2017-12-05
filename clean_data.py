@@ -113,6 +113,6 @@ def clean_data():
         if not didWrite:
             os.remove(filename + '.txt')
 
-    apply_to_n_files(os.path.normpath('/Volumes/TIME/msd/C'), 10000000, toTxt)
+    apply_to_n_files(os.path.normpath('/Volumes/TIME/msd/K'), 10000000, toTxt)
 
 clean_data()
