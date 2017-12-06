@@ -8,7 +8,7 @@ import ast
 
 from util import *
 
-songs = pd.read_csv("/Users/kade/LocalDocs/MillionSongSubset/subset.csv")
+songs = pd.read_csv("/Users/kade/LocalDocs/subset.csv")
 
 def normalize(val, minVal, maxVal):
     return (float(val) - minVal) / maxVal
