@@ -18,12 +18,8 @@ for line in f.xreadlines():
             # it's 1-based!
             bag[topwords[int(wordid) - 1]] = True
 
-            # print id
         song_lyrics[id] = bag
 f.close()
-
-# print 'KEYS'
-# print song_lyrics.keys()
 
 def todo(words):
     # TODO
