@@ -6,16 +6,6 @@ from util import *
 
 # prints the count of songs we have data on from each playlist
 
-msd = [
-    '/Users/kade/LocalDocs/A-enhanced-trimmed.csv',
-    '/Users/kade/LocalDocs/B-enhanced-trimmed.csv',
-    '/Users/kade/LocalDocs/C-enhanced-trimmed.csv',
-    '/Users/kade/LocalDocs/D-enhanced-trimmed.csv'
-]
-
-def song_key(artist, title):
-    return artist.lower() + ', ' + title.lower()
-
 msd_song_titles = {}
 for subset_file in msd:
     songs = pd.read_csv(subset_file)
@@ -35,6 +25,6 @@ for root, dirs, files in os.walk('./playlists'):
             for line in lines:
                 if line.lower() in msd_song_titles:
                     overlap = overlap + 1
-            if overlap > 2:
+            if overlap > 10:
                 print 'Playlist: ' + str(f)
                 print overlap

@@ -69,6 +69,16 @@ def compute_overlap():
                     else:
                         misses = misses + 1
 
+msd = [
+    '/Users/kade/LocalDocs/A-enhanced-trimmed.csv',
+    '/Users/kade/LocalDocs/B-enhanced-trimmed.csv',
+    '/Users/kade/LocalDocs/C-enhanced-trimmed.csv',
+    '/Users/kade/LocalDocs/D-enhanced-trimmed.csv',
+    '/Users/kade/LocalDocs/I-enhanced-trimmed.csv'
+]
+
+def song_key(artist, title):
+    return artist.lower() + ', ' + title.lower()
 
 # import pandas as pd
 # songs = pd.read_csv("/Users/kade/LocalDocs/subset.csv")
