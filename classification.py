@@ -4,26 +4,8 @@ from sklearn import linear_model
 import pandas as pd
 import pprint
 pp = pprint.PrettyPrinter(indent=4)
-\
-from util import *
 
-#load songs
-# songs = []
-# for root, dirs, files in os.walk('/Users/kade/LocalDocs/MillionSongSubset2/data'):
-#     files = glob.glob(os.path.join(root, '*.txt'))
-#     for f in files:
-#         with open(f, 'r') as inFile:
-#             lines = [line.rstrip('\n') for line in inFile]
-#             for line in lines:
-#                 song = decode_song(line)
-#                 song['year'] = normalize(song['year'], MIN_YEAR, MAX_YEAR)
-#                 song['tempo'] = normalize(song['tempo'], MIN_TEMPO, MAX_TEMPO)
-#                 # remove non-numeric attributes
-#                 song.pop('song_id', None)
-#                 song.pop('title', None)
-#                 song.pop('segments_timbre', None)
-#                 song.pop('artist_name', None)
-#                 songs.append(flatten_song(song))
+from util import *
 
 # TODO ADD INTERCEPT
 
@@ -42,17 +24,15 @@ for index, _ in songs.iterrows():
     # if song['artist_name'] == 'Aerosmith':
     #   print song['title']
 
-    if song['artist_name'] == 'Bon Jovi':
-        print i
-        print song['title']
-        print float(song['sentiment_score'])
-        print float(song['popularity'])
-        pp.pprint(ast.literal_eval(song['audio_features'])[0])
+    # if song['artist_name'] == 'Bon Jovi':
+    #     print i
+    #     print song['title']
 
-    if song['artist_name'] in name_counts:
-        name_counts[song['artist_name']] = name_counts[song['artist_name']] + 1
-    else:
-        name_counts[song['artist_name']] = 1
+    # if song['artist_name'] in name_counts:
+    #     name_counts[song['artist_name']] = name_counts[song['artist_name']] + 1
+    # else:
+    #     name_counts[song['artist_name']] = 1
+    #
 
     if i > 1695 and i < 1705:
         test_titles.append(song['artist_name'] + ', ' + song['title'])
@@ -60,8 +40,8 @@ for index, _ in songs.iterrows():
     flat_songs.append(flatten_song(song))
     i = i + 1
 
-aero_songs = [flat_songs[292], flat_songs[312], flat_songs[843],
-    flat_songs[1019], flat_songs[1093], flat_songs[1238],  flat_songs[1458]]
+# aero_songs = [flat_songs[292], flat_songs[312], flat_songs[843],
+#     flat_songs[1019], flat_songs[1093], flat_songs[1238],  flat_songs[1458]]
 
 jovi_songs = [flat_songs[9], flat_songs[72], flat_songs[108],
     flat_songs[309], flat_songs[847], flat_songs[1659]]
@@ -76,9 +56,11 @@ y_train = y_train + [ 0 for x in range(10)]
 
 x_test = flat_songs[1695:1705]
 
-model = linear_model.LinearRegression()
+# model = linear_model.LinearRegression()
+model = linear_model.LogisticRegression(C=1e5)
+
 model.fit(x_train, y_train)
-y_pred = model.predict(x_test)
+y_pred = model.predict_proba(x_test)
 
 for key in name_counts:
     if name_counts[key] > 5:
@@ -86,9 +68,6 @@ for key in name_counts:
 
 for i in range(9):
     print test_titles[i] + ': ' + str(y_pred[i])
-
-# Aerosmith song indices
-# 292, 312, 843, 1019, 1093, 1238, 1458, 1511
 
 # CLASSIFICATIONS FROM THE AEROSMITH TRAINING DATA
 # Winds Of Plague, Origins And Endings: 0.386695109939

@@ -3,7 +3,7 @@ import tables
 import os
 import glob
 
-songs = pd.read_csv("/Users/kade/LocalDocs/A.csv")
+songs = pd.read_csv("/Users/kade/LocalDocs/D.csv")
 
 def open_h5_file_read(h5filename):
     return tables.open_file(h5filename, mode='r+')
@@ -25,7 +25,7 @@ def get_num_songs(h5):
 
 obj = {}
 cnt = 0
-for root, dirs, files in os.walk(os.path.normpath('/Users/kade/LocalDocs/A')):
+for root, dirs, files in os.walk(os.path.normpath('/Users/kade/LocalDocs/D')):
     files = glob.glob(os.path.join(root, '*.h5'))
     for f in files :
         h5File = open_h5_file_read(f)
@@ -51,8 +51,10 @@ def find_track(song):
 enhanced_songs = []
 for index, _ in songs.iterrows():
     song = songs.iloc[index].to_dict()
+    if song['artist_name'] == 'ERROR':
+        continue
     song['track_id'] = find_track(song)
     enhanced_songs.append(song)
 
 output = pd.DataFrame(enhanced_songs)
-output.to_csv("/Users/kade/LocalDocs/A-enhanced.csv")
+output.to_csv("/Users/kade/LocalDocs/D-enhanced.csv")
