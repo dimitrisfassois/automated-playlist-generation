@@ -28,4 +28,4 @@ for index, _ in songs.iterrows():
     has_data.append(song_dict)
 
 output = pd.DataFrame(has_data)
-output.to_csv("/Users/kade/LocalDocs/D-enhanced-timmed.csv")
+output.to_csv("/Users/kade/LocalDocs/D-enhanced-trimmed.csv")
