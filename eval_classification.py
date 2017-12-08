@@ -30,6 +30,7 @@ for subset_file in msd:
 playlist = playlist_songs.values()
 playlist_len = len(playlist)
 mid = playlist_len / 2
+print 'We have ' + str(playlist_len) + ' songs'
 
 pos_train = playlist[0:mid] # half of playlist_songs
 neg_train = neg_examples[0:mid] # random songs not in playlist
@@ -44,8 +45,10 @@ model = linear_model.LogisticRegression(C=1e5)
 
 model.fit(x_train, y_train)
 
-print 'Positive Test Examples'
-print model.predict(pos_test)
+pos_pred = model.predict(pos_test)
+print 'Percent correct classifications'
+print round(float(sum(pos_pred)) / float(mid), 2)
 
-print 'Neg Test Examples'
-print model.predict(neg_test)
+neg_pred = model.predict(neg_test)
+print 'Percent false positive'
+print round(float(sum(neg_pred)) / float(mid), 2)

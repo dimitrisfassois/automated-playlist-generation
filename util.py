@@ -74,17 +74,9 @@ msd = [
     '/Users/kade/LocalDocs/B-enhanced-trimmed.csv',
     '/Users/kade/LocalDocs/C-enhanced-trimmed.csv',
     '/Users/kade/LocalDocs/D-enhanced-trimmed.csv',
+    '/Users/kade/LocalDocs/E-enhanced-trimmed.csv',
     '/Users/kade/LocalDocs/I-enhanced-trimmed.csv'
 ]
 
 def song_key(artist, title):
     return artist.lower() + ', ' + title.lower()
-
-# import pandas as pd
-# songs = pd.read_csv("/Users/kade/LocalDocs/subset.csv")
-# names = []
-# for index, _ in songs.iterrows():
-#     names.append(str(songs.iloc[index]['artist_name']) + ', ' + str(songs.iloc[index]['title']))
-#
-# for name in sorted(names):
-#     print name
