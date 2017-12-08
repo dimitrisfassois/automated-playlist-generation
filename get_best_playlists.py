@@ -30,9 +30,10 @@ for root, dirs, files in os.walk('./playlists'):
 
         with open(f, 'r') as inFile:
             lines = [line.rstrip('\n') for line in inFile]
-            print 'Playlist: ' + str(f)
             overlap = 0
             for line in lines:
                 if line.lower() in msd_song_titles:
                     overlap = overlap + 1
-            print overlap
+            if overlap > 2:
+                print 'Playlist: ' + str(f)
+                print overlap
