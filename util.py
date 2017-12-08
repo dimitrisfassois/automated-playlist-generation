@@ -1,6 +1,7 @@
 import os
 import glob
 import ast
+import numpy
 
 keys = ['song_id', 'title', 'segments_timbre', 'artist_name', 'sentiment_score', 'year']
 delimiter = '|||'
@@ -31,9 +32,12 @@ def flatten_song(song):
     songArray = []
     songArray.append(float(song['sentiment_score']))
     songArray.append(float(song['popularity']))
+    songArray.append(normalize(song['year'], MIN_YEAR, MAX_YEAR))
 
     audio_features = ['acousticness', 'tempo', 'instrumentalness', 'liveness', 'speechiness', 'valence', 'danceability']
     song_audio_features = ast.literal_eval(song['audio_features'])[0]
+
+    # print song_audio_features
 
     for feature in audio_features:
         # normalize
@@ -43,6 +47,9 @@ def flatten_song(song):
             songArray.append(float(song_audio_features[feature]))
 
     return songArray
+
+def distance(song1, song2):
+    return numpy.linalg.norm(song1-song2)
 
 # how much overlap is there in our playlists and the MSD
 def compute_overlap():
@@ -75,7 +82,8 @@ msd = [
     '/Users/kade/LocalDocs/C-enhanced-trimmed.csv',
     '/Users/kade/LocalDocs/D-enhanced-trimmed.csv',
     '/Users/kade/LocalDocs/E-enhanced-trimmed.csv',
-    '/Users/kade/LocalDocs/I-enhanced-trimmed.csv'
+    '/Users/kade/LocalDocs/I-enhanced-trimmed.csv',
+    '/Users/kade/LocalDocs/K-enhanced-trimmed.csv'
 ]
 
 def song_key(artist, title):

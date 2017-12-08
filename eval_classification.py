@@ -19,6 +19,10 @@ for subset_file in msd:
     songs = pd.read_csv(subset_file)
     for index, _ in songs.iterrows():
         song = songs.iloc[index]
+
+        if not ast.literal_eval(song['audio_features'])[0]:
+            continue
+
         key = song_key(song['artist_name'],song['title'])
 
         if key in playlist_song_titles:
