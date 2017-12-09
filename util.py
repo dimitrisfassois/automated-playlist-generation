@@ -83,9 +83,12 @@ msd = [
     '/Users/kade/LocalDocs/D-enhanced-trimmed.csv',
     '/Users/kade/LocalDocs/E-enhanced-trimmed.csv',
     '/Users/kade/LocalDocs/F-enhanced-trimmed.csv',
+    '/Users/kade/LocalDocs/G-enhanced-trimmed.csv',
     '/Users/kade/LocalDocs/I-enhanced-trimmed.csv',
     '/Users/kade/LocalDocs/K-enhanced-trimmed.csv'
 ]
+
+msd_test = ['/Users/kade/LocalDocs/A-enhanced-trimmed.csv']
 
 def song_key(artist, title):
     return artist.lower() + ', ' + title.lower()
