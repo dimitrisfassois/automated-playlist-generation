@@ -36,7 +36,7 @@ sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
 #load songs
 songs = []
-for root, dirs, files in os.walk('/Volumes/TIME/msd/L'):
+for root, dirs, files in os.walk('/Volumes/TIME/msd/N'):
     files = glob.glob(os.path.join(root, '*.txt'))
     for f in files:
         with open(f, 'r') as inFile:
@@ -104,6 +104,6 @@ for song in songs:
     # song['tags'] = all_tags
 
 output = pd.DataFrame(songs)
-output.to_csv("/Volumes/TIME/msd/L.csv")
+output.to_csv("/Volumes/TIME/msd/N.csv")
 
 print 'SCREWUP COUNT: ' + str(screwupCount)

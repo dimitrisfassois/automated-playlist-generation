@@ -84,7 +84,9 @@ msd = [
     '/Users/kade/LocalDocs/E-enhanced-trimmed.csv',
     '/Users/kade/LocalDocs/F-enhanced-trimmed.csv',
     '/Users/kade/LocalDocs/G-enhanced-trimmed.csv',
+    '/Users/kade/LocalDocs/H-enhanced-trimmed.csv',
     '/Users/kade/LocalDocs/I-enhanced-trimmed.csv',
+    '/Users/kade/LocalDocs/J-enhanced-trimmed.csv',
     '/Users/kade/LocalDocs/K-enhanced-trimmed.csv'
 ]
 

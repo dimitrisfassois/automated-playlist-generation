@@ -7,6 +7,8 @@ from util import *
 good_songs = []
 flat_songs = []
 
+print 'Reading in dataset...'
+
 for subset_file in msd:
     songs = pd.read_csv(subset_file)
     for index, _ in songs.iterrows():
@@ -14,72 +16,128 @@ for subset_file in msd:
         # some songs have 'NONE' as the audio feature
         if not ast.literal_eval(song['audio_features'])[0]:
             continue
+        # cut unpopular songs in an effort to make playlist more recognizable
+        if song['popularity'] < 0.2:
+            continue
         good_songs.append(song)
         flat_songs.append(np.array(flatten_song(song)))
 
-print len(good_songs)
+# for i, song in enumerate(good_songs):
+#     if song['artist_name'] == 'The Smiths':
+#         print '==='
+#         print i
+#         print song['title']
 
-# DP shortest path of length k
-def shortest_path(k, song1, song2):
+print 'Total songs: ' + str(len(good_songs))
+
+# DP shortest path with k nodes
+def shortest_path(k, song1_index, song2_index):
+    # algo operates on edges
+    k = k + 2
+
+    song1 = flat_songs[song1_index]
+    song2 = flat_songs[song2_index]
     dist = distance(song1, song2)
 
     # restrict the search to songs that are generally close to our two songs
-    # this is a bounding sphere with the two songs on the edges
+    # this is a bounding sphere (in n-dimensions) with the two songs on the edges
+    # it finds the average of the two points, and restricts the graph to songs nearby
     neighborhood = []
     midpoint = (song1 + song2) / 2
     radius = dist / 2.0 + 0.001
 
+    neighborhood_to_good_songs = []
+    good_songs_to_neighborhood = [0] * len(flat_songs)
+
     for i, song in enumerate(flat_songs):
         if distance(midpoint, song) <= radius:
             neighborhood.append(song)
-    print len(neighborhood)
+            neighborhood_to_good_songs.append(i)
+        good_songs_to_neighborhood[i] = len(neighborhood) - 1
+
+    V = len(neighborhood)
+    print 'Songs within bounding area: ' + str(V)
 
     # get new indexes of songs in the cut down neighborhood
-    song1_n_index = 0
-    song2_n_index = 0
-    for i, song in enumerate(neighborhood):
-        if (song == song1).all():
-            song1_n_index = i
-        if (song == song2).all():
-            song1_n_index = i
+    song1_n_index = good_songs_to_neighborhood[song1_index]
+    song2_n_index = good_songs_to_neighborhood[song2_index]
 
+    print 'Calculating distances...'
     # make distances adjacancy matrix
-    V = len(neighborhood)
     distances = np.zeros((V,V))
-    for i in range(V):
-        for j in range(V):
-            # don't let node be connected to itself
-            if i == j:
-                distances[i][j] = sys.maxint
-            else:
-                d = distance(neighborhood[i], neighborhood[j])
-                distances[i][j] = d
 
+    # it's symmetrics, so save a little time just iterating over half
+    for i in range(V):
+        for j in range(i + 1, V):
+            d = distance(neighborhood[i], neighborhood[j])
+            distances[i][j] = d
+            distances[j][i] = d
+
+    # diagonal
+    for i in range(V):
+        distances[i][i] = sys.maxint
 
     # shortest_paths[v][e] means shortest path from song1 to v with e+1 edges
     shortest_paths = np.zeros((V,k))
     shortest_paths = shortest_paths + sys.maxint
 
+    # path_indices[v][e] = u means that to get to v, take the shortest path to u then go to v
+    path_indices = np.zeros((V,k))
+    # prevent cycles
+    visited = [set() for _ in range(V)]
+
+    print 'Calculating path...'
     for e in range(k):
+        print 'e: ' + str(e)
         for i in range(V):
             if e == 0:
                 shortest_paths[i][e] = distances[song1_n_index][i]
+                path_indices[i][e] = i
+                visited[i].add(song1_n_index)
             else:
+                # don't let the source or destination be part of the path
+                if e < k-1 and (i == song1_n_index or i == song2_n_index):
+                    continue
+                # don't let previously visited things be part of the path
+                if i in visited[i]:
+                    continue
+
                 branches = [sys.maxint] * V
+
                 for j in range(V):
-                    branches[j] = shortest_paths[j][e-1] + distances[j][i]
-                shortest_paths[i][e] = min(branches)
+                    if e < k-1 and (j == song1_n_index or j == song2_n_index):
+                        continue
+                    if j in visited[i]:
+                        continue
 
-    # TODO track actual path
-    # TODO get indices of songs and map back to titles
+                    branches[j] = shortest_paths[j][e-1] + distances[i][j]
 
-    print song1_n_index
-    print song2_n_index
+                best_path = min(branches)
+                shortest_paths[i][e] = best_path
+                node = branches.index(best_path)
+                path_indices[i][e] = node
+                visited[i].add(node)
 
-    for i in range(k):
-        print shortest_paths[song2_n_index][i]
+    # construct the path backwards
+    path = [song2_n_index]
+    for e in reversed(range(1, k)):
+        v = int(path_indices[path[-1]][e])
+        path.append(v)
 
-    print 'Actual dist'
-    print distances[song1_n_index][song2_n_index]
+    path.append(song1_n_index)
 
-shortest_path(10, flat_songs[352], flat_songs[8])
+    # the algorithm lets one duplicate node sneak in, so remove it
+    path = reduce(lambda l, x: l if x in l else l + [x], path, [])
+    path.reverse()
+    print 'Shortest path (node indices): ' + str(path)
+    print 'Path dist: ' + str(shortest_paths[song2_n_index][k-1])
+    print 'Actual dist: ' + str(distances[song1_n_index][song2_n_index])
+
+    print 'The Playlist:'
+    for i in path:
+        index = neighborhood_to_good_songs[i]
+        s = good_songs[index]
+        print s['artist_name'] + ', ' + s['title']
+
+# 24 and 308 are The Smiths songs
+shortest_path(10, 24, 308)
