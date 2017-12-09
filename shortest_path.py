@@ -7,7 +7,7 @@ from util import *
 good_songs = []
 flat_songs = []
 
-for subset_file in msd_test:
+for subset_file in msd:
     songs = pd.read_csv(subset_file)
     for index, _ in songs.iterrows():
         song = songs.iloc[index]
@@ -29,49 +29,57 @@ def shortest_path(k, song1, song2):
     midpoint = (song1 + song2) / 2
     radius = dist / 2.0 + 0.001
 
-    for song in flat_songs:
+    for i, song in enumerate(flat_songs):
         if distance(midpoint, song) <= radius:
             neighborhood.append(song)
-
     print len(neighborhood)
 
-    # make adjacancy matrix
+    # get new indexes of songs in the cut down neighborhood
+    song1_n_index = 0
+    song2_n_index = 0
+    for i, song in enumerate(neighborhood):
+        if (song == song1).all():
+            song1_n_index = i
+        if (song == song2).all():
+            song1_n_index = i
+
+    # make distances adjacancy matrix
     V = len(neighborhood)
     distances = np.zeros((V,V))
     for i in range(V):
-        for j in range(V/2 + 1):
-            d = distance(neighborhood[i], neighborhood[j])
-            distances[i][j] = d
-            distances[j][i] = d
+        for j in range(V):
+            # don't let node be connected to itself
+            if i == j:
+                distances[i][j] = sys.maxint
+            else:
+                d = distance(neighborhood[i], neighborhood[j])
+                distances[i][j] = d
 
-    shortest_paths = np.zeros((V,V,k))
+
+    # shortest_paths[v][e] means shortest path from song1 to v with e+1 edges
+    shortest_paths = np.zeros((V,k))
     shortest_paths = shortest_paths + sys.maxint
 
     for e in range(k):
         for i in range(V):
-            for j in range(V):
+            if e == 0:
+                shortest_paths[i][e] = distances[song1_n_index][i]
+            else:
+                branches = [sys.maxint] * V
+                for j in range(V):
+                    branches[j] = shortest_paths[j][e-1] + distances[j][i]
+                shortest_paths[i][e] = min(branches)
 
-                # base case
-                if e == 0:
-                    shortest_paths[i][j][e] = distances[i][j]
-                else:
-                    for a in range(V):
-                        if i != a and j!= a:
-                            p = min(shortest_paths[i][j][e], distances[i][a] + shortest_paths[a][j][e-1])
-                            shortest_paths[i][j][e] = p
-                            # TODO track actual path
-
+    # TODO track actual path
     # TODO get indices of songs and map back to titles
-    i = numpy.nonzero(neighborhood == song1)
-    j = numpy.nonzero(neighborhood == song2)
-    print i[0][0]
-    print j[0][0]
 
-    print shortest_paths[0][1][0]
-    print shortest_paths[0][1][1]
-    print shortest_paths[0][1][2]
-    print distances[0][1]
+    print song1_n_index
+    print song2_n_index
 
-    #TODO keep track of song after conversion to neghborhood and print path
+    for i in range(k):
+        print shortest_paths[song2_n_index][i]
 
-shortest_path(3, flat_songs[0], flat_songs[1])
+    print 'Actual dist'
+    print distances[song1_n_index][song2_n_index]
+
+shortest_path(10, flat_songs[352], flat_songs[8])
