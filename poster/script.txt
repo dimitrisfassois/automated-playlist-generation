@@ -1,0 +1,33 @@
+MOTIVATION
+
+Hello, our project around automated playlist generation is motivated by the explosive growth of streaming services that put millions of songs at everyone's fingertips. Choosing and discovering what to listen to is becoming increasing challenging, so we wanted to apply machine learning to the art of making playlists. We train and evaluate our models on popular human-generated playlist and find that our models to a great job of predicting what songs will belong on a playlist and recommending new ones.
+
+(~25 seconds)
+
+DATA & FEATURES
+
+Our data comes initially from the Million Song Dataset and corresponding lyrics database. We then augment that info with audio features and popularity info from Spotify.
+
+As for raw features, we have 9 audio features such as "Tempo", "Energy", and "Loudness". We have the metadata on song popularity and release date, and we have song lyrics in a bag-of-words format. We chose to incorporate lyrics info because we believe they play a big role when making playlists.
+
+(~25 seconds)
+
+From the raw feature of Timbre, which is TODO we derive
+
+From the lyrics we derive TODO
+
+MODELS
+
+TODO
+
+RESULTS
+
+WE gathered over TODO hundred popular playlists from Spotify, and then narrowed it down to those that we had data on at least 20 of the songs. This gave us TODO playlist and TODO songs to work with. TODO
+
+DISCUSSION
+
+TODO
+
+FUTURE
+
+TODO
