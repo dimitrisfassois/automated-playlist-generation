@@ -9,8 +9,9 @@ import pandas as pd
 import os
 import ast
 import glob
-
-from util import *
+import numpy as np
+from collections import defaultdict
+#from util import *
 
 from collections import defaultdict
 
@@ -25,14 +26,25 @@ E = pd.read_csv("E-enhanced-trimmed.csv")
 F = pd.read_csv("F-enhanced-trimmed.csv")
 I = pd.read_csv("I-enhanced-trimmed.csv")
 K = pd.read_csv("K-enhanced-trimmed.csv")
+L = pd.read_csv("L-enhanced-trimmed.csv")
 
+songs = A.append(B).append(C).append(D).append(E).append(F).append(I).append(K)
+
+del A
+del B
+del C
+del D
+del E
+del F
+del I
+del K
+del L
 
 def song_key(artist, title):
     return artist.lower() + ', ' + title.lower()
 
-
-songs = A.append(B).append(C).append(D).append(E).append(F).append(I).append(K)
-
+# Create song_id column that can be used for looking up the song lyrics
+# Create a dict that contains lyrics for every song
 songs_lyrics = {}
 for index, _ in songs.iterrows():
     song = songs.iloc[index]
@@ -40,7 +52,14 @@ for index, _ in songs.iterrows():
     lyrics = list(lyrics.keys())
     key = song_key(song.loc['artist_name'],song.loc['title'])
     songs_lyrics[key] = lyrics
+    print(key)
+    songs.loc[index, 'song_artist_title'] = key
     
+for index, _ in songs.iterrows():
+    song = songs.iloc[index]
+    key = song_key(song.loc['artist_name'],song.loc['title'])
+    songs.loc[index, 'song_artist_title'] = key
+    print(song)
 
 
 # prints the count of songs we have data on from each playlist
@@ -78,7 +97,7 @@ for playlist in playlist_song_titles.keys():
             song_set[playlist].extend(songs_lyrics[song.lower()])
         
 
-
+### LDA ####
 from nltk.tokenize import RegexpTokenizer
 from stop_words import get_stop_words
 from nltk.stem.porter import PorterStemmer
@@ -125,10 +144,10 @@ ldamodel = gensim.models.ldamodel.LdaModel(corpus, num_topics=3, id2word = dicti
 
 
 
-columns = song_set.keys()
+#columns = song_set.keys()
 
-df = pd.DataFrame(columns = columns)
-pd.set_option('display.width', 1000)
+#df = pd.DataFrame(columns = columns)
+#pd.set_option('display.width', 1000)
 
 # Get Per-topic word probability matrix:
 K = ldamodel.num_topics
@@ -139,6 +158,22 @@ print (topicWordProbMat)
 for t in texts:
      vec = dictionary.doc2bow(t)
      print (ldamodel[vec])
+
+################### Output LDA results in the csv #################
+
+for song in songs_lyrics.keys():
+    song_lyrics = songs_lyrics[song]
+    song_lyrics = ' '.join(song_lyrics) 
+    song_lyrics = song_lyrics.lower()
+    song_lyrics = tokenizer.tokenize(song_lyrics)
+    vec = dictionary.doc2bow(song_lyrics)
+    songs.loc[index, 'song_artist_title'] = key
+    print(song)
+    print (ldamodel[vec][0])
+
+
+# remove stop words from tokens
+stopped_tokens = [i for i in tokens if not i in en_stop]
 
 # 40 will be resized later to match number of words in DC
 zz = np.zeros(shape=(40,len(song_set.keys())))
