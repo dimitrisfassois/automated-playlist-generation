@@ -2,7 +2,7 @@
 
 import pandas as pd
 
-songs = pd.read_csv("/Users/kade/LocalDocs/J-enhanced.csv")
+songs = pd.read_csv("/Users/kade/LocalDocs/N-enhanced.csv")
 names = []
 i = 0
 has_data = [];
@@ -28,4 +28,4 @@ for index, _ in songs.iterrows():
     has_data.append(song_dict)
 
 output = pd.DataFrame(has_data)
-output.to_csv("/Users/kade/LocalDocs/J-enhanced-trimmed.csv")
+output.to_csv("/Users/kade/LocalDocs/N-enhanced-trimmed.csv")

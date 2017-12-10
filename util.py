@@ -30,7 +30,7 @@ def normalize(val, minVal, maxVal):
 
 def flatten_song(song):
     songArray = []
-    songArray.append(float(song['sentiment_score']))
+    songArray.append(float(song['sentiment_score']) / 4) # 0/1 is too extreme
     songArray.append(float(song['popularity']))
     songArray.append(normalize(song['year'], MIN_YEAR, MAX_YEAR))
 
@@ -87,10 +87,17 @@ msd = [
     '/Users/kade/LocalDocs/H-enhanced-trimmed.csv',
     '/Users/kade/LocalDocs/I-enhanced-trimmed.csv',
     '/Users/kade/LocalDocs/J-enhanced-trimmed.csv',
-    '/Users/kade/LocalDocs/K-enhanced-trimmed.csv'
+    '/Users/kade/LocalDocs/K-enhanced-trimmed.csv',
+    '/Users/kade/LocalDocs/L-enhanced-trimmed.csv',
+    '/Users/kade/LocalDocs/N-enhanced-trimmed.csv',
 ]
 
-msd_test = ['/Users/kade/LocalDocs/A-enhanced-trimmed.csv']
+msd_test = ['/Users/kade/LocalDocs/C-enhanced-trimmed.csv']
+
+best_playlists = [
+    './playlists/60s, 70s, 80s Classic Rock.txt',
+
+]
 
 def song_key(artist, title):
     return artist.lower() + ', ' + title.lower()

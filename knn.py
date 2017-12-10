@@ -16,24 +16,20 @@ for subset_file in msd:
         good_songs.append(song)
         flat_songs.append(np.array(flatten_song(song)))
 
+# returns an array of (song name, distance, flat_song)
 def knn(k, song):
     distances = []
     i = 0
 
     for otherSong in flat_songs:
-        distances.append( (distance(song, otherSong), i))
+        distances.append((distance(song, otherSong), i, otherSong))
         i = i + 1
 
     distances = sorted(distances)
 
     neighbors = []
     for j in range(0,k):
-        print distances[j]
         sng = str(good_songs[distances[j][1]]['artist_name']) + ', ' + str(good_songs[distances[j][1]]['title'])
-        neighbors.append(sng)
+        neighbors.append((sng, distances[j][0], distances[j][2]))
 
     return neighbors
-
-print flat_songs[0]
-n = knn(4, flat_songs[0])
-print n

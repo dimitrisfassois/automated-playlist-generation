@@ -14,6 +14,9 @@ for subset_file in msd:
         key = song_key(song['artist_name'],song['title'])
         msd_song_titles[key] = True
 
+viable_count = 0
+song_count = 0
+
 for root, dirs, files in os.walk('./playlists'):
     files = glob.glob(os.path.join(root, '*.txt'))
     for f in files:
@@ -25,6 +28,11 @@ for root, dirs, files in os.walk('./playlists'):
             for line in lines:
                 if line.lower() in msd_song_titles:
                     overlap = overlap + 1
-            if overlap > 10:
+            if overlap > 20:
                 print 'Playlist: ' + str(f)
                 print overlap
+                viable_count = viable_count + 1
+                song_count = song_count + overlap
+
+print str(viable_count) + ' viable playlists'
+print str(song_count) + ' viable songs on those playlists'

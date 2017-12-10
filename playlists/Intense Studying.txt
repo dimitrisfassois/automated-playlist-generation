@@ -156,6 +156,7 @@ Edward Elgar, Variations on an Original Theme, Op. 36, "Enigma" (version for pia
 Edward Elgar, Variations on an Original Theme, Op. 36, "Enigma" (version for piano): Var. 13: Romanza: *** (Lady Mary Lygon)
 Edward Elgar, Variations on an Original Theme, Op. 36, "Enigma" (version for piano): Var. 14: Finale: E. D. U. (The Composer)
 Jean-Philippe Rameau, Rameau: Gavotte variée
+Carl Philipp Emanuel Bach, 12 Variations on La folia d'Espagne, Wq. 118/9, H. 263
 Frederic Rzewski, The People United Will Never Be Defeated: Theme: With determination
 Frederic Rzewski, The People United Will Never Be Defeated: Variation 1: Weaving: delicate but firm
 Frederic Rzewski, The People United Will Never Be Defeated: Variation 2: With firmness
@@ -196,13 +197,7 @@ Frederic Rzewski, The People United Will Never Be Defeated: Variation 36
 Frederic Rzewski, The People United Will Never Be Defeated: Cadenza
 Frederic Rzewski, The People United Will Never Be Defeated: Thema: Tempo I
 William Byrd, Hughe Ashton's Ground - Remastered
-Franz Liszt, Handel / Arr Liszt : Sarabande & Chaconne from Almira : I Sarabande
-Franz Liszt, Handel / Arr Liszt : Sarabande & Chaconne from Almira : II Chaconne
-Charles-Valentin Alkan, 12 Études dans tous les tons mineurs, Op. 39: XII. Le festin d'ésope
-César Franck, Prélude, fugue & variation en si mineur Op.18 : I. Prelude
-César Franck, Prélude, fugue & variation en si mineur Op.18 : II. Fugue
-César Franck, Prélude, fugue & variation en si mineur Op.18 : III. Variation
-George Benjamin, Meditation on Haydn’s Name
+Franz Liszt, Variations on a Cantata by Bach "Weinen, Klagen, Sorgen, Zagen", S.180
 Giuseppe Martucci, Theme and Variations in E flat, Op.58 (for solo piano): Theme - Andantino -
 Giuseppe Martucci, Theme and Variations in E flat, Op.58 (for solo piano): Variation I -
 Giuseppe Martucci, Theme and Variations in E flat, Op.58 (for solo piano): Variation II -
@@ -215,6 +210,7 @@ Giuseppe Martucci, Theme and Variations in E flat, Op.58 (for solo piano): Varia
 Giuseppe Martucci, Theme and Variations in E flat, Op.58 (for solo piano): Allegro molto e con fuoco - Più allegro - Andante -
 Giuseppe Martucci, Theme and Variations in E flat, Op.58 (for solo piano): Fugue - Allegro con spirito (Finale of the first edition)
 Carl Nielsen, Chaconne, Op. 32
+César Franck, Prélude, fugue & variation en si mineur Op.18 : III. Variation
 Gabriel Fauré, Thème et Variations en do dièse mineur, op. 79: I. Thème: Quasi adagio
 Gabriel Fauré, Thème et Variations en do dièse mineur, op. 79: II. Variation I: Lo stesso tempo
 Gabriel Fauré, Thème et Variations en do dièse mineur, op. 79: III. Variation II: Più mosso
@@ -228,6 +224,7 @@ Gabriel Fauré, Thème et Variations en do dièse mineur, op. 79: X. Variation I
 Gabriel Fauré, Thème et Variations en do dièse mineur, op. 79: XI. Variation X: Allegro vivo
 Gabriel Fauré, Thème et Variations en do dièse mineur, op. 79: XII. Variation XI: Andante molto moderato espressivo
 Alexander Scriabin, Variations sur un thème de M-lle Egoroff in F Minor (1887)
+Francis Poulenc, Thème varié, FP 151
 Nikolai Medtner, Second Improvisation, Op. 47: Theme: The Song of the Water Nymph: Andante —
 Nikolai Medtner, Second Improvisation, Op. 47: Variation 1: Meditation: Poco con moto e al rigore di tempo —
 Nikolai Medtner, Second Improvisation, Op. 47: Variation 2: Caprice: Capriccioso —
@@ -246,6 +243,7 @@ Nikolai Medtner, Second Improvisation, Op. 47: Variation 14: Song of the Water N
 Nikolai Medtner, Second Improvisation, Op. 47: Variation 15: The Storm: Tranquillo, ma poco a poco piu mosso e crescendo - Sempre allegro agitato —
 Nikolai Medtner, Second Improvisation, Op. 47: Conclusion: Andante - Maestoso
 Franz Schubert, Variations sur un thème original, Op. 35, D 813
+George Frideric Handel, Harpsichord Suite No.5 in E HWV 430 "The Harmonious Blacksmith": Air - Double 1-5
 Paul Dukas, Variations, Interlude et Finale sur un theme de Rameau: Theme menuet
 Paul Dukas, Variation 1: tendrement
 Paul Dukas, Variation 2: assez vif tres rythme
@@ -260,8 +258,11 @@ Paul Dukas, Variation 10: sans lenteur bien marque
 Paul Dukas, Variation 11: sombre assez lent
 Paul Dukas, Variations, Interlude et Finale sur un theme de Rameau: Interlude
 Paul Dukas, Variations, Interlude et Finale sur un theme de Rameau: Finale (var. 12): moderement anime
+Charles-Valentin Alkan, 12 Études dans tous les tons mineurs, Op. 39: XII. Le festin d'ésope
 Ferruccio Busoni, Ten Variations on a Prelude of Chopin, BV 213a
+Leoš Janáček, Tema con Variazioni - Variations for Zdenka
+Leopold Godowsky, Passacaglia - 44 variations, cadenza and fugue, on the opening of Schuberts Unfinished Symphony
 Georges Bizet, Variations chromatiques
 Edvard Grieg, Grieg: Ballade in G Minor, Op. 24:
-Leopold Godowsky, Passacaglia - 44 variations, cadenza and fugue, on the opening of Schuberts Unfinished Symphony
+George Benjamin, Meditation on Haydn’s Name
 Ludwig van Beethoven, Piano Sonata No.32 In C Minor, Op.111: 2. Arietta (Adagio molto semplice e cantabile)
