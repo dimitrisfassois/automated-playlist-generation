@@ -17,7 +17,7 @@ with open('./playlists/60s, 70s, 80s Classic Rock.txt', 'r') as inFile:
 playlist_songs = {}
 neg_examples = [] # random selection of negative examples
 i = 0
-for subset_file in msd:
+for subset_file in msd_test:
     songs = pd.read_csv(subset_file)
     for index, _ in songs.iterrows():
         song = songs.iloc[index]
@@ -49,7 +49,7 @@ predictions = knn(mid, centroid)
 
 # avg distance from arbitrary point in X to point in Y
 # calculated by getting distance from every point in X to every point in Y and averaging
-count = len(pos_train) + len(predictions)
+count = len(pos_train) * len(predictions)
 avg = 0
 for s1 in pos_train:
     for s2 in predictions:
@@ -57,7 +57,7 @@ for s1 in pos_train:
 
 print 'Avg distance to positive train set: ' + str(avg)
 
-count = len(pos_test) + len(predictions)
+count = len(pos_test) * len(predictions)
 avg = 0
 for s1 in pos_test:
     for s2 in predictions:
@@ -65,7 +65,7 @@ for s1 in pos_test:
 
 print 'Avg distance to positive test set:  ' + str(avg)
 
-count = len(neg_test) + len(predictions)
+count = len(neg_test) * len(predictions)
 avg = 0
 for s1 in neg_test:
     for s2 in predictions:

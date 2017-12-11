@@ -6,7 +6,7 @@ from util import *
 good_songs = []
 flat_songs = []
 
-for subset_file in msd:
+for subset_file in msd_test:
     songs = pd.read_csv(subset_file)
     for index, _ in songs.iterrows():
         song = songs.iloc[index]

@@ -150,9 +150,9 @@ def shortest_path_between_flat(k, s1, s2):
     i = 0
     j = 0
     for index, song in enumerate(flat_songs):
-        if (s1 == song).all()
+        if (s1 == song).all():
             i = index
-        if (s2 == song).all()
+        if (s2 == song).all():
             j = index
     return shortest_path(k, i, j)
 
