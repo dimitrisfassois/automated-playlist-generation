@@ -30,7 +30,7 @@ def normalize(val, minVal, maxVal):
 
 def flatten_song(song):
     songArray = []
-    songArray.append(float(song['sentiment_score']) / 4) # 0/1 is too extreme
+    # songArray.append(float(song['sentiment_score']) / 4) # 0/1 is too extreme
     songArray.append(float(song['popularity']))
     songArray.append(normalize(song['year'], MIN_YEAR, MAX_YEAR))
 

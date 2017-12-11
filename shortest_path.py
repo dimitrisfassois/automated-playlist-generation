@@ -4,12 +4,22 @@ import sys
 
 from util import *
 
+# evaluates our algorithm against a particular playlist
+playlist_song_titles = {}
+with open('./playlists/60s, 70s, 80s Classic Rock.txt', 'r') as inFile:
+    lines = [line.rstrip('\n') for line in inFile]
+    for line in lines:
+        playlist_song_titles[line.lower()] = True
+
 good_songs = []
 flat_songs = []
+playlist_songs = {}
+neg_examples = [] # random selection of negative examples
+i = 0
 
 print 'Reading in dataset...'
-
-for subset_file in msd_test:
+for subset_file in msd:
+    print subset_file
     songs = pd.read_csv(subset_file)
     for index, _ in songs.iterrows():
         song = songs.iloc[index]
@@ -21,6 +31,13 @@ for subset_file in msd_test:
             continue
         good_songs.append(song)
         flat_songs.append(np.array(flatten_song(song)))
+
+        key = song_key(song['artist_name'],song['title'])
+        if key in playlist_song_titles:
+            playlist_songs[key] = np.array(flatten_song(song))
+        elif i < 1000:
+            i = i + 1
+            neg_examples.append(np.array(flatten_song(song)))
 
 # for i, song in enumerate(good_songs):
 #     if song['artist_name'] == 'The Smiths':
@@ -45,7 +62,7 @@ def shortest_path(k, song1_index, song2_index):
     # it finds the average of the two points, and restricts the graph to songs nearby
     neighborhood = []
     midpoint = (song1 + song2) / 2
-    radius = dist / 2.0 + 0.001
+    radius = dist / 2.0 + 0.01
 
     neighborhood_to_good_songs = []
     good_songs_to_neighborhood = [0] * len(flat_songs)
@@ -158,3 +175,20 @@ def shortest_path_between_flat(k, s1, s2):
 
 # 24 and 308 are The Smiths songs
 # shortest_path(10, 24, 308)
+
+########################################## EVALUATION
+
+playlist = playlist_songs.values()
+playlist_len = len(playlist)
+print 'We have ' + str(playlist_len) + ' songs'
+
+# find path between first and last songs
+predictions = shortest_path_between_flat(playlist_len, playlist[0], playlist[-1])
+
+count = playlist_len * len(predictions)
+avg = 0
+for s1 in playlist:
+    for s2 in predictions:
+        avg = avg + distance(s1, s2) / count
+
+print 'Avg distance to actual playlist: ' + str(avg)
