@@ -2,6 +2,7 @@ import os
 import glob
 import ast
 import numpy
+import math
 
 keys = ['song_id', 'title', 'segments_timbre', 'artist_name', 'sentiment_score', 'year']
 delimiter = '|||'
@@ -30,17 +31,18 @@ def normalize(val, minVal, maxVal):
 
 def flatten_song(song):
     songArray = []
-    # songArray.append(float(song['sentiment_score']) / 4) # 0/1 is too extreme
+    songArray.append(float(song['sentiment_score']) / 4) # 0/1 is too extreme
     songArray.append(float(song['popularity']))
+    songArray.append(float(song['lda_probs_topic_1']))
+    songArray.append(float(song['lda_probs_topic_2']))
+    songArray.append(float(song['lda_probs_topic_3']))
+
     songArray.append(normalize(song['year'], MIN_YEAR, MAX_YEAR))
 
     audio_features = ['acousticness', 'tempo', 'instrumentalness', 'liveness', 'speechiness', 'valence', 'danceability']
     song_audio_features = ast.literal_eval(song['audio_features'])[0]
 
-    # print song_audio_features
-
     for feature in audio_features:
-        # normalize
         if feature == 'tempo':
             songArray.append(normalize(song_audio_features['tempo'], MIN_TEMPO, MAX_TEMPO))
         else:
@@ -50,6 +52,10 @@ def flatten_song(song):
 
 def distance(song1, song2):
     return numpy.linalg.norm(song1-song2)
+
+# we have 13 dimensions, so farthest possible is sqrt(13)
+def normalize_distance(d):
+    return normalize(d, 0, math.sqrt(13))
 
 # how much overlap is there in our playlists and the MSD
 def compute_overlap():

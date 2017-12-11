@@ -18,26 +18,24 @@ neg_examples = [] # random selection of negative examples
 i = 0
 
 print 'Reading in dataset...'
-for subset_file in msd:
-    print subset_file
-    songs = pd.read_csv(subset_file)
-    for index, _ in songs.iterrows():
-        song = songs.iloc[index]
-        # some songs have 'NONE' as the audio feature
-        if not ast.literal_eval(song['audio_features'])[0]:
-            continue
-        # cut unpopular songs in an effort to make playlist more recognizable
-        if song['popularity'] < 0.2:
-            continue
-        good_songs.append(song)
-        flat_songs.append(np.array(flatten_song(song)))
+songs = pd.read_csv("/Users/kade/LocalDocs/A_N_lda.csv")
+for index, _ in songs.iterrows():
+    song = songs.iloc[index]
+    # some songs have 'NONE' as the audio feature
+    if not ast.literal_eval(song['audio_features'])[0]:
+        continue
+    # cut unpopular songs in an effort to make playlist more recognizable
+    if song['popularity'] < 0.2:
+        continue
+    good_songs.append(song)
+    flat_songs.append(np.array(flatten_song(song)))
 
-        key = song_key(song['artist_name'],song['title'])
-        if key in playlist_song_titles:
-            playlist_songs[key] = np.array(flatten_song(song))
-        elif i < 1000:
-            i = i + 1
-            neg_examples.append(np.array(flatten_song(song)))
+    key = song_key(song['artist_name'],song['title'])
+    if key in playlist_song_titles:
+        playlist_songs[key] = np.array(flatten_song(song))
+    elif i < 1000:
+        i = i + 1
+        neg_examples.append(np.array(flatten_song(song)))
 
 # for i, song in enumerate(good_songs):
 #     if song['artist_name'] == 'The Smiths':
@@ -191,4 +189,4 @@ for s1 in playlist:
     for s2 in predictions:
         avg = avg + distance(s1, s2) / count
 
-print 'Avg distance to actual playlist: ' + str(avg)
+print 'Avg distance to actual playlist: ' + str(normalize_distance(avg))

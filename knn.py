@@ -16,25 +16,25 @@ with open('./playlists/60s, 70s, 80s Classic Rock.txt', 'r') as inFile:
 playlist_songs = {}
 neg_examples = [] # random selection of negative examples
 i = 0
-for subset_file in msd:
-    print subset_file
-    songs = pd.read_csv(subset_file)
-    for index, _ in songs.iterrows():
-        song = songs.iloc[index]
-        # some songs have 'NONE' as the audio feature
-        if not ast.literal_eval(song['audio_features'])[0]:
-            continue
-        good_songs.append(song)
-        flat_songs.append(np.array(flatten_song(song)))
 
+print 'Reading in dataset...'
+songs = pd.read_csv("/Users/kade/LocalDocs/A_N_lda.csv")
+for index, _ in songs.iterrows():
+    song = songs.iloc[index]
 
-        key = song_key(song['artist_name'],song['title'])
+    # some songs have 'NONE' as the audio feature
+    if not ast.literal_eval(song['audio_features'])[0]:
+        continue
+    good_songs.append(song)
+    flat_songs.append(np.array(flatten_song(song)))
 
-        if key in playlist_song_titles:
-            playlist_songs[key] = np.array(flatten_song(song))
-        elif i < 100:
-            i = i + 1
-            neg_examples.append(np.array(flatten_song(song)))
+    key = song_key(song['artist_name'],song['title'])
+
+    if key in playlist_song_titles:
+        playlist_songs[key] = np.array(flatten_song(song))
+    elif i < 100:
+        i = i + 1
+        neg_examples.append(np.array(flatten_song(song)))
 
 # returns an array of (song name, distance, flat_song)
 def knn(k, song):
@@ -78,7 +78,7 @@ for s1 in pos_train:
     for s2 in pos_train:
         avg = avg + distance(s1, s2) / count
 
-print 'Baseline: Avg distance within train set:          ' + str(avg)
+print 'Baseline: Avg distance within train set:          ' + str(normalize_distance(avg))
 
 count = len(pos_train) * len(predictions)
 avg = 0
@@ -86,7 +86,7 @@ for s1 in pos_train:
     for s2 in predictions:
         avg = avg + distance(s1, s2[2]) / count
 
-print 'Avg distance of prediction to positive train set: ' + str(avg)
+print 'Avg distance of prediction to positive train set: ' + str(normalize_distance(avg))
 
 count = len(pos_test) * len(predictions)
 avg = 0
@@ -94,7 +94,7 @@ for s1 in pos_test:
     for s2 in predictions:
         avg = avg + distance(s1, s2[2]) / count
 
-print 'Avg distance of prediction to positive test set:  ' + str(avg)
+print 'Avg distance of prediction to positive test set:  ' + str(normalize_distance(avg))
 
 count = len(neg_test) * len(predictions)
 avg = 0
@@ -102,4 +102,4 @@ for s1 in neg_test:
     for s2 in predictions:
         avg = avg + distance(s1, s2[2]) / count
 
-print 'Avg distance of prediction to negative test set:  ' + str(avg)
+print 'Avg distance of prediction to negative test set:  ' + str(normalize_distance(avg))
