@@ -15,7 +15,8 @@ from collections import defaultdict
 
 from collections import defaultdict
 
-os.chdir('D:\\Docs\\Stanford - Mining Massive Datasets\\CS229\\Project\\MillionSongSubset')
+os.chdir('C:\\Users\\fade7001\\Documents\\Resources\\CS229\\CS229 Project')
+# os.chdir('D:\\Docs\\Stanford - Mining Massive Datasets\\CS229\\Project\\MillionSongSubset')
 
 
 A = pd.read_csv("A-enhanced-timmed.csv")
@@ -27,8 +28,10 @@ F = pd.read_csv("F-enhanced-trimmed.csv")
 I = pd.read_csv("I-enhanced-trimmed.csv")
 K = pd.read_csv("K-enhanced-trimmed.csv")
 L = pd.read_csv("L-enhanced-trimmed.csv")
+M = pd.read_csv("M-enhanced-trimmed.csv")
+N = pd.read_csv("N-enhanced-trimmed.csv")
 
-songs = A.append(B).append(C).append(D).append(E).append(F).append(I).append(K)
+songs = A.append(B).append(C).append(D).append(E).append(F).append(I).append(K).append(L).append(M).append(N)
 
 del A
 del B
@@ -39,27 +42,63 @@ del F
 del I
 del K
 del L
+del M
+del N
+
+
+# The indices have duplicate values because the songs df was created by concatenating other dfs
+songs.index = list(range(songs.shape[0]))
+
+
+#### Add lyrics data
+f = open('mxm_dataset_full.txt', 'r')
+song_lyrics = {}
+for line in f.readlines():
+    if line == '' or line[0] == '#':
+        continue
+    elif line[0] == '%':
+        topwords = line.strip()[1:].split(',')
+    else:
+        lineparts = line.strip().split(',')
+        bag = {}
+        id = lineparts[0]
+        for wordcnt in lineparts[2:]:
+            wordid, cnt = wordcnt.split(':')
+            # it's 1-based!
+            bag[topwords[int(wordid) - 1]] = True
+
+        song_lyrics[id] = bag
+f.close()
 
 def song_key(artist, title):
     return artist.lower() + ', ' + title.lower()
 
-# Create song_id column that can be used for looking up the song lyrics
+
+# Add all lyrics to songs df
+    # Create song_artist_title column that can be used for looking up the song lyrics
+for index, _ in songs.iterrows():
+    track_id = songs.loc[index, 'track_id']
+    if track_id in song_lyrics:
+        songs.loc[index, 'todo'] = str(song_lyrics[track_id])
+    key = song_key(songs.loc[index, 'artist_name'],songs.loc[index, 'title'])
+    songs.loc[index, 'song_artist_title'] = key
+    print(songs.iloc[index])
+
+# Remove duplicated songs
+songs = songs.loc[~songs.duplicated('song_artist_title')]
+del song_lyrics
+songs.index = list(range(songs.shape[0]))
+
 # Create a dict that contains lyrics for every song
+
 songs_lyrics = {}
 for index, _ in songs.iterrows():
     song = songs.iloc[index]
-    lyrics = ast.literal_eval(song['todo'])
-    lyrics = list(lyrics.keys())
-    key = song_key(song.loc['artist_name'],song.loc['title'])
-    songs_lyrics[key] = lyrics
-    print(key)
-    songs.loc[index, 'song_artist_title'] = key
-    
-for index, _ in songs.iterrows():
-    song = songs.iloc[index]
-    key = song_key(song.loc['artist_name'],song.loc['title'])
-    songs.loc[index, 'song_artist_title'] = key
-    print(song)
+    if  isinstance(song['todo'], str):
+        lyrics = ast.literal_eval(song['todo'])
+        lyrics = list(lyrics.keys())
+        songs_lyrics[songs.loc[index, 'song_artist_title']] = lyrics
+        print(songs.loc[index, 'song_artist_title'])
 
 
 # prints the count of songs we have data on from each playlist
@@ -67,10 +106,8 @@ for index, _ in songs.iterrows():
 
 msd_song_titles = {}
 
-
 for index, _ in songs.iterrows():
-    song = songs.iloc[index]
-    key = song_key(song['artist_name'],song['title'])
+    key = songs.loc[index, 'song_artist_title']
     msd_song_titles[key] = True
 
 playlist_song_titles = {}
@@ -85,7 +122,7 @@ for root, dirs, files in os.walk('./playlists'):
             for line in lines:
                 if line.lower() in msd_song_titles:
                     overlap = overlap + 1
-            if overlap > 2:
+            if overlap > 5:
                 print('Playlist: ' + str(f))
                 print(overlap)
                 playlist_song_titles[playlist_name] = lines
@@ -96,18 +133,18 @@ for playlist in playlist_song_titles.keys():
         if song.lower() in msd_song_titles.keys():
             song_set[playlist].extend(songs_lyrics[song.lower()])
         
+del msd_song_titles
 
 ### LDA ####
 from nltk.tokenize import RegexpTokenizer
-from stop_words import get_stop_words
 from nltk.stem.porter import PorterStemmer
 from gensim import corpora, models
 import gensim
-
+from nltk.corpus import stopwords
 tokenizer = RegexpTokenizer(r'\w+')
 
 # create English stop words list
-en_stop = get_stop_words('en')
+en_stop = set(stopwords.words('english'))
 
 # Create p_stemmer of class PorterStemmer
 p_stemmer = PorterStemmer()
@@ -167,100 +204,15 @@ for song in songs_lyrics.keys():
     song_lyrics = song_lyrics.lower()
     song_lyrics = tokenizer.tokenize(song_lyrics)
     vec = dictionary.doc2bow(song_lyrics)
-    songs.loc[index, 'song_artist_title'] = key
+    probs = np.zeros(3)
+    lda_probs = ldamodel[vec]
+    for prob in lda_probs:
+        probs[prob[0]] = prob[1]
     print(song)
-    print (ldamodel[vec][0])
+    print (lda_probs)
+    print(probs)
+    songs.loc[songs['song_artist_title']==song, 'lda_probs_topic_1'] = probs[0]
+    songs.loc[songs['song_artist_title']==song, 'lda_probs_topic_2'] = probs[1]
+    songs.loc[songs['song_artist_title']==song, 'lda_probs_topic_3'] = probs[2]
 
-
-# remove stop words from tokens
-stopped_tokens = [i for i in tokens if not i in en_stop]
-
-# 40 will be resized later to match number of words in DC
-zz = np.zeros(shape=(40,len(song_set.keys())))
-
-last_number=0
-DC={}
-
-for x in range (10):
-  data = pd.DataFrame({columns[0]:"",
-                     columns[1]:"",
-                     columns[2]:"",
-                     columns[3]:"",
-                     columns[4]:"",
-                    columns[5]:"",
-                    columns[6]:"",
-                    columns[7]:"",
-                                                                                       
-                     
-                    },index=[0])
-  df=df.append(data,ignore_index=True)  
-  
-lda_corpus = [max(prob,key=lambda y:y[1])
-                for prob in ldamodel[corpus] ]    
-for line in topicWordProbMat:
-    
-    tp, w = line
-    probs=w.split("+")
-    y=0
-    for pr in probs:
-               
-        a=pr.split("*")
-        for index, k in enumerate(lda_corpus):
-            if k[0]==tp:
-                df.loc[y,song.keys()[index]] = a[1]
-        y=y+1
-
-print (df)
-print (zz)
-
-import re
-
-
-columns = song_set.keys()
-
-indeces = []
-for topic in ldamodel.print_topics():
-    string = topic[1]
-    indeces.extend(re.findall(r'"(.*?)"', string))
-
-df = pd.DataFrame(columns = columns, index = indeces )
-pd.set_option('display.width', 1000)
-
-for line in topicWordProbMat:
-    
-    tp, w = line
-    probs=w.split("+")
-    y=0
-    for pr in probs:
-               
-        a=pr.split("*")
-        for index, k in enumerate(lda_corpus):
-            if k[0]==tp:
-                a[1] = a[1].encode('utf-8')
-                df.loc[ str.strip(re.sub(r'"', '', a[1])),song_set.keys()[index]] = a[0]
-        y=y+1
-
-df = df.fillna(0)     
-
-import seaborn as sns; sns.set()
-
-df = df[df.columns].astype(float)
-df_heatmap = sns.heatmap(df)
-fig = df_heatmap.get_figure()
-fig.savefig("output.png")
-
-  
-import matplotlib.pyplot as plt
-
-zz=np.resize(zz,(len(DC.keys()),zz.shape[1]))
-
-for val, key in enumerate(DC.keys()):
-        plt.text(-2.5, val + 0.5, key,
-                 horizontalalignment='center',
-                 verticalalignment='center'
-                 )
-
-plt.imshow(zz, cmap='hot', interpolation='nearest')
-plt.show()
-
-
+songs.to_csv('A_N_lda.csv')
