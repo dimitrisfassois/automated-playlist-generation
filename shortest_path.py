@@ -9,7 +9,7 @@ flat_songs = []
 
 print 'Reading in dataset...'
 
-for subset_file in msd:
+for subset_file in msd_test:
     songs = pd.read_csv(subset_file)
     for index, _ in songs.iterrows():
         song = songs.iloc[index]
@@ -31,6 +31,7 @@ for subset_file in msd:
 print 'Total songs: ' + str(len(good_songs))
 
 # DP shortest path with k nodes
+# Returns list of flat songs on playlist
 def shortest_path(k, song1_index, song2_index):
     # algo operates on edges
     k = k + 2
@@ -133,11 +134,27 @@ def shortest_path(k, song1_index, song2_index):
     print 'Path dist: ' + str(shortest_paths[song2_n_index][k-1])
     print 'Actual dist: ' + str(distances[song1_n_index][song2_n_index])
 
+    plist = []
+
     print 'The Playlist:'
     for i in path:
         index = neighborhood_to_good_songs[i]
         s = good_songs[index]
         print s['artist_name'] + ', ' + s['title']
+        plist.append(neighborhood[i])
+
+    return plist
+
+# finds the indices of the songs and return the path
+def shortest_path_between_flat(k, s1, s2):
+    i = 0
+    j = 0
+    for index, song in enumerate(flat_songs):
+        if (s1 == song).all()
+            i = index
+        if (s2 == song).all()
+            j = index
+    return shortest_path(k, i, j)
 
 # 24 and 308 are The Smiths songs
-shortest_path(10, 24, 308)
+# shortest_path(10, 24, 308)

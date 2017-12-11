@@ -55,7 +55,7 @@ for s1 in pos_train:
     for s2 in predictions:
         avg = avg + distance(s1, s2[2]) / count
 
-print 'Distance to positive train set: ' + str(avg)
+print 'Avg distance to positive train set: ' + str(avg)
 
 count = len(pos_test) + len(predictions)
 avg = 0
@@ -63,7 +63,7 @@ for s1 in pos_test:
     for s2 in predictions:
         avg = avg + distance(s1, s2[2]) / count
 
-print 'Distance to positive test set:  ' + str(avg)
+print 'Avg distance to positive test set:  ' + str(avg)
 
 count = len(neg_test) + len(predictions)
 avg = 0
@@ -71,4 +71,4 @@ for s1 in neg_test:
     for s2 in predictions:
         avg = avg + distance(s1, s2[2]) / count
 
-print 'Distance to negative test set:  ' + str(avg)
+print 'Avg distance to negative test set:  ' + str(avg)

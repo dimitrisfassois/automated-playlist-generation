@@ -51,7 +51,7 @@ model.fit(x_train, y_train)
 
 pos_pred_train = model.predict(pos_train)
 print 'Train accuracy'
-print round(float(sum(pos_pred)) / float(mid), 2)
+print round(float(sum(pos_pred_train)) / float(mid), 2)
 
 pos_pred = model.predict(pos_test)
 print 'Test accuracy'

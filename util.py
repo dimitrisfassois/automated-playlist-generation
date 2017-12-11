@@ -89,10 +89,12 @@ msd = [
     '/Users/kade/LocalDocs/J-enhanced-trimmed.csv',
     '/Users/kade/LocalDocs/K-enhanced-trimmed.csv',
     '/Users/kade/LocalDocs/L-enhanced-trimmed.csv',
+    '/Users/kade/LocalDocs/M-enhanced-trimmed.csv',
     '/Users/kade/LocalDocs/N-enhanced-trimmed.csv',
+    '/Users/kade/LocalDocs/O-enhanced-trimmed.csv',
 ]
 
-msd_test = ['/Users/kade/LocalDocs/C-enhanced-trimmed.csv']
+msd_test = ['/Users/kade/LocalDocs/A-enhanced-trimmed.csv']
 
 best_playlists = [
     './playlists/60s, 70s, 80s Classic Rock.txt',
