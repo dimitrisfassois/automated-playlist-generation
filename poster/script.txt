@@ -12,13 +12,13 @@ As for raw features, we have 9 audio features such as "Tempo", "Energy", and "Lo
 
 (~25 seconds)
 
-From the raw feature of Timbre, which is TODO we derive
+From the raw feature of Timbre, which is time series of the perceived tone of every song over time we derive a hidden markov model with three hidden states, which denote three different levels of sound tone. Then we create a feauture for every song by averaging all of its latent path values from the hmm over time.
 
-From the lyrics we derive TODO
+From the lyrics we derive 3 topics for every playlist using a Latent Dirichlet allocation model. Then for every song we calculate the probabilities that it belongs to one of the three topics, which are then used as additional features.
 
 MODELS
 
-TODO
+After normalizing all the feautures, different classification models were used and the best performant model was selected using grid search and cross validation.
 
 RESULTS
 
