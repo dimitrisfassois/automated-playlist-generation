@@ -102,9 +102,50 @@ msd = [
 
 msd_test = ['/Users/kade/LocalDocs/A-enhanced-trimmed.csv']
 
+# 41 playlists
 best_playlists = [
-    './playlists/60s, 70s, 80s Classic Rock.txt',
-
+'./playlists/Breakup Songs - Getting Over Him.txt',
+'./playlists/90s Smash Hits.txt',
+'./playlists/British invasion.txt',
+"./playlists/2000's pop,emo,punk rock.txt",
+'./playlists/Happy Hour Classic Rock.txt',
+'./playlists/Throw Back Playlist.txt',
+"./playlists/Mammas, Don't Let Your Babies Grow Up to Be Cowboys.txt",
+'./playlists/Growing up 90s: Canadian Rock Radio.txt',
+'./playlists/60s - british invasion.txt',
+"./playlists/British Invasion (60's).txt",
+'./playlists/Metal, Rock & Alternative (happy mix).txt',
+'./playlists/GROWING UP.txt',
+'./playlists/HITS 2000+.txt',
+'./playlists/Lowrider oldies.txt',
+'./playlists/Wedding Dance Music 2018.txt',
+'./playlists/Winter playlist.txt',
+'./playlists/60s, 70s, 80s Classic Rock.txt',
+# './playlists/British Punk.txt',
+'./playlists/Good old songs .txt',
+'./playlists/Kisstory - Old School Anthems.txt',
+'./playlists/falling in love at a coffee shop.txt',
+'./playlists/90s Rock Renaissance.txt',
+'./playlists/Middle School Panty Droppers.txt',
+'./playlists/Good "old" party hits.txt',
+'./playlists/96.3 Easy Rock.txt',
+'./playlists/God Save the Queen - The Best of British Post-Punk, New Wave, Madchester, and Brit Pop.txt',
+'./playlists/Middle School Dance Playlist.txt',
+'./playlists/Baladas Americanas.txt',
+'./playlists/middle school throwbacks.txt',
+'./playlists/Empowering Breakup Songs .txt',
+"./playlists/JOJO'S BIZARRE ADVENTURE.txt",
+'./playlists/Middle School Punk Rock Boner Jams.txt',
+'./playlists/Happy rock car....txt',
+'./playlists/Summer Hits of the 2000s.txt',
+'./playlists/Oldies....txt',
+"./playlists/Barb's Spotify.txt",
+'./playlists/Best of British Punk.txt',
+'./playlists/old songs.txt',
+'./playlists/Workday: Rock Classics.txt',
+'./playlists/Classic Rock.txt',
+'./playlists/Disney 2000s Oldies Hits -  Various Artists.txt',
+'./playlists/Funk, Soul, Classic Rock and Happy Blues.txt'
 ]
 
 def song_key(artist, title):

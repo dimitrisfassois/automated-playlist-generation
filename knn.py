@@ -6,17 +6,6 @@ from util import *
 good_songs = []
 flat_songs = []
 
-# evaluates our algorithm against a particular playlist
-playlist_song_titles = {}
-with open('./playlists/60s, 70s, 80s Classic Rock.txt', 'r') as inFile:
-    lines = [line.rstrip('\n') for line in inFile]
-    for line in lines:
-        playlist_song_titles[line.lower()] = True
-
-playlist_songs = {}
-neg_examples = [] # random selection of negative examples
-i = 0
-
 print 'Reading in dataset...'
 songs = pd.read_csv("/Users/kade/LocalDocs/A_N_lda.csv")
 for index, _ in songs.iterrows():
@@ -27,14 +16,6 @@ for index, _ in songs.iterrows():
         continue
     good_songs.append(song)
     flat_songs.append(np.array(flatten_song(song)))
-
-    key = song_key(song['artist_name'],song['title'])
-
-    if key in playlist_song_titles:
-        playlist_songs[key] = np.array(flatten_song(song))
-    elif i < 100:
-        i = i + 1
-        neg_examples.append(np.array(flatten_song(song)))
 
 # returns an array of (song name, distance, flat_song)
 def knn(k, song):
@@ -56,50 +37,80 @@ def knn(k, song):
 
 ########################################## EVALUATION
 
-playlist = playlist_songs.values()
-playlist_len = len(playlist)
-divider = playlist_len * 3 / 4
-print 'We have ' + str(playlist_len) + ' songs'
+within_train_avg = 0
+pos_train_avg = 0
+pos_test_avg = 0
+neg_test_avg = 0
 
-pos_train = playlist[0:divider] # 3/4 of playlist_songs
+for playlist_name in best_playlists:
+    # evaluates our algorithm against a particular playlist
+    playlist_song_titles = {}
+    with open(playlist_name, 'r') as inFile:
+        lines = [line.rstrip('\n') for line in inFile]
+        for line in lines:
+            playlist_song_titles[line.lower()] = True
 
-pos_test = playlist[divider:playlist_len] # other 1/4 of playlist_songs
-neg_test = neg_examples[divider:playlist_len] # random songs not in playlist
+    playlist_songs = {}
+    neg_examples = [] # random selection of negative examples
+    for i in range(len(good_songs)):
+        key = good_songs[i]['song_artist_title']
 
-centroid = sum(pos_train) / len(pos_train)
-print centroid
-predictions = knn(playlist_len / 4, centroid)
+        if key in playlist_song_titles:
+            playlist_songs[key] = np.array(flat_songs[i])
+        elif i < 1000:
+            neg_examples.append(np.array(flat_songs[i]))
 
-# avg distance from arbitrary point in X to point in Y
-# calculated by getting distance from every point in X to every point in Y and averaging
-count = len(pos_train) * len(pos_train)
-avg = 0
-for s1 in pos_train:
-    for s2 in pos_train:
-        avg = avg + distance(s1, s2) / count
+    playlist = playlist_songs.values()
+    playlist_len = len(playlist)
+    divider = playlist_len * 3 / 4
+    print 'We have ' + str(playlist_len) + ' songs in playlist: ' + str(playlist_name)
 
-print 'Baseline: Avg distance within train set:          ' + str(normalize_distance(avg))
+    pos_train = playlist[0:divider] # 3/4 of playlist_songs
+    pos_test = playlist[divider:playlist_len] # other 1/4 of playlist_songs
+    neg_test = neg_examples[divider:playlist_len] # random songs not in playlist
 
-count = len(pos_train) * len(predictions)
-avg = 0
-for s1 in pos_train:
-    for s2 in predictions:
-        avg = avg + distance(s1, s2[2]) / count
+    centroid = sum(pos_train) / len(pos_train)
+    predictions = knn(playlist_len / 4, centroid)
 
-print 'Avg distance of prediction to positive train set: ' + str(normalize_distance(avg))
+    # avg distance from arbitrary point in X to point in Y
+    # calculated by getting distance from every point in X to every point in Y and averaging
+    count = len(pos_train) * len(pos_train)
+    avg = 0
+    for s1 in pos_train:
+        for s2 in pos_train:
+            avg = avg + distance(s1, s2) / count
+    within_train_avg = within_train_avg + avg
+    print 'Baseline: Avg distance within train set:          ' + str(normalize_distance(avg))
 
-count = len(pos_test) * len(predictions)
-avg = 0
-for s1 in pos_test:
-    for s2 in predictions:
-        avg = avg + distance(s1, s2[2]) / count
+    count = len(pos_train) * len(predictions)
+    avg = 0
+    for s1 in pos_train:
+        for s2 in predictions:
+            avg = avg + distance(s1, s2[2]) / count
+    pos_train_avg = pos_train_avg + avg
+    print 'Avg distance of prediction to positive train set: ' + str(normalize_distance(avg))
 
-print 'Avg distance of prediction to positive test set:  ' + str(normalize_distance(avg))
+    count = len(pos_test) * len(predictions)
+    avg = 0
+    for s1 in pos_test:
+        for s2 in predictions:
+            avg = avg + distance(s1, s2[2]) / count
+    pos_test_avg = pos_test_avg + avg
+    print 'Avg distance of prediction to positive test set:  ' + str(normalize_distance(avg))
 
-count = len(neg_test) * len(predictions)
-avg = 0
-for s1 in neg_test:
-    for s2 in predictions:
-        avg = avg + distance(s1, s2[2]) / count
+    count = len(neg_test) * len(predictions)
+    avg = 0
+    for s1 in neg_test:
+        for s2 in predictions:
+            avg = avg + distance(s1, s2[2]) / count
+    neg_test_avg = neg_test_avg + avg
+    print 'Avg distance of prediction to negative test set:  ' + str(normalize_distance(avg))
 
-print 'Avg distance of prediction to negative test set:  ' + str(normalize_distance(avg))
+print '================OVERALL AVERAGES================'
+
+denom = float(len(best_playlists))
+print denom
+print 'Baseline: Avg distance within train set:          ' + str(normalize_distance(within_train_avg / denom))
+print 'Avg distance of prediction to positive train set: ' + str(normalize_distance(pos_train_avg / denom))
+print 'Avg distance of prediction to positive test set:  ' + str(normalize_distance(pos_test_avg / denom))
+print 'Avg distance of prediction to negative test set:  ' + str(normalize_distance(neg_test_avg / denom))

@@ -30,13 +30,6 @@ for index, _ in songs.iterrows():
     good_songs.append(song)
     flat_songs.append(np.array(flatten_song(song)))
 
-    key = song_key(song['artist_name'],song['title'])
-    if key in playlist_song_titles:
-        playlist_songs[key] = np.array(flatten_song(song))
-    elif i < 1000:
-        i = i + 1
-        neg_examples.append(np.array(flatten_song(song)))
-
 # for i, song in enumerate(good_songs):
 #     if song['artist_name'] == 'The Smiths':
 #         print '==='
@@ -73,6 +66,9 @@ def shortest_path(k, song1_index, song2_index):
 
     V = len(neighborhood)
     print 'Songs within bounding area: ' + str(V)
+
+    if (V < k or V > 2000):
+        return 0
 
     # get new indexes of songs in the cut down neighborhood
     song1_n_index = good_songs_to_neighborhood[song1_index]
@@ -176,17 +172,46 @@ def shortest_path_between_flat(k, s1, s2):
 
 ########################################## EVALUATION
 
-playlist = playlist_songs.values()
-playlist_len = len(playlist)
-print 'We have ' + str(playlist_len) + ' songs'
+dist_avg = 0
+skips = 0
+for playlist_name in best_playlists:
+    # evaluates our algorithm against a particular playlist
+    playlist_song_titles = {}
+    with open(playlist_name, 'r') as inFile:
+        lines = [line.rstrip('\n') for line in inFile]
+        for line in lines:
+            playlist_song_titles[line.lower()] = True
 
-# find path between first and last songs
-predictions = shortest_path_between_flat(playlist_len, playlist[0], playlist[-1])
+    playlist_songs = {}
+    neg_examples = [] # random selection of negative examples
+    for i in range(len(good_songs)):
+        key = good_songs[i]['song_artist_title']
+        if key in playlist_song_titles:
+            playlist_songs[key] = np.array(flat_songs[i])
+        elif i < 1000:
+            neg_examples.append(np.array(flat_songs[i]))
 
-count = playlist_len * len(predictions)
-avg = 0
-for s1 in playlist:
-    for s2 in predictions:
-        avg = avg + distance(s1, s2) / count
+    playlist = playlist_songs.values()
+    playlist_len = len(playlist)
+    print 'We have ' + str(playlist_len) + ' songs in playlist: ' + str(playlist_name)
 
-print 'Avg distance to actual playlist: ' + str(normalize_distance(avg))
+    # find path between first and last songs
+    predictions = shortest_path_between_flat(playlist_len, playlist[0], playlist[-1])
+
+    if predictions == 0:
+        print "THIS PLAYLIST WAS TOO BIG/SMALL. SKIPPING"
+        skips = skips + 1
+        continue
+
+    count = playlist_len * len(predictions)
+    avg = 0
+    for s1 in playlist:
+        for s2 in predictions:
+            avg = avg + distance(s1, s2) / count
+    dist_avg = dist_avg + avg
+    print 'Avg distance to actual playlist: ' + str(normalize_distance(avg))
+
+
+denom = float(len(best_playlists) - skips)
+print denom
+print 'Avg distance to actual playlist: ' + str(normalize_distance(dist_avg / denom))
