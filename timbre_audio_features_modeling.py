@@ -12,19 +12,47 @@ import os
 import pandas as pd
 from sklearn.manifold import TSNE
 
-os.chdir("D:\\Docs\\Stanford - Mining Massive Datasets\\CS229\\Project\\MillionSongSubset")
+os.chdir("C:\\Users\\fade7001\\Documents\\Resources\\CS229\\CS229 Project")
 
-output = pd.read_csv("subset.csv")
-song = output.iloc[0]
-flat_timbre =np.asarray(output['segments_timbre'])
+import sys
+import csv
+maxInt = sys.maxsize
+decrement = True
+
+while decrement:
+    # decrease the maxInt value by factor 10 
+    # as long as the OverflowError occurs.
+
+    decrement = False
+    try:
+        csv.field_size_limit(maxInt)
+    except OverflowError:
+        maxInt = int(maxInt/10)
+        decrement = True
+        
+songs = pd.read_csv("A_N_lda.csv", engine='python')
+song = songs.iloc[0]
+flat_timbre =np.asarray(songs['segments_timbre'])
 flat_timbre = np.array([np.array(sublist) for sublist in flat_timbre])
 flat_timbre = np.array(flat_timbre)
 
+flatten = lambda l: [np.array(item) for sublist in l for item in sublist]
 flat_timbres = []
 lengths = []
-for index, _ in output.iterrows():
+train_sample_ind = np.random.permutation(songs.shape[0])[0:500]
+for index in train_sample_ind:
+    segments_timbre = ast.literal_eval(songs.loc[index,'segments_timbre'])
+    flattened = flatten(segments_timbre)
+    flat_timbres.extend(flattened)
+    lengths.append(len(flattened))
+    print(index)
+    
+itera = 0
+for index in train_sample_ind:
+    itera += 1
+    print(itera)
     length = 0
-    song = output.iloc[index]
+    song = songs.iloc[index]
     segments_timbre = ast.literal_eval(song['segments_timbre'])
     for sublist in segments_timbre:
         for item in sublist:
@@ -32,15 +60,29 @@ for index, _ in output.iterrows():
             flat_timbres.append(np.array([item]))
     lengths.append(length)
     
-flat_timbres = np.array(flat_timbres)    
+flat_timbres = np.array(flat_timbres)
+np.savetxt('flat_timbres.txt', flat_timbres)    
 
-remodel = hmm.GaussianHMM(n_components=3, covariance_type="full", n_iter=100)
-remodel.fit(flat_timbres, lengths)
-Z2 = remodel.predict(flat_timbres) 
+model = hmm.GaussianHMM(n_components=3, covariance_type="full", n_iter=100)
+model.fit(flat_timbres, lengths)
+Z2 = model.predict(flat_timbres) 
 
-np.average(flat_timbres[Z2==0])
-np.average(flat_timbres[Z2==1])
-np.average(flat_timbres[Z2==2])
+np.average(flat_timbres[Z2==0]) # 4.862618086785444
+np.average(flat_timbres[Z2==1]) # -2.0262942700941506
+np.average(flat_timbres[Z2==2]) # 46.324125012268624
+
+for index, _ in songs.iterrows():
+    segments_timbre = ast.literal_eval(songs.loc[index, 'segments_timbre'])
+    song_timbres=[]
+    for sublist in segments_timbre:
+        for item in sublist:
+            song_timbres.append(np.array([item]))
+    song_timbres = np.array(song_timbres)
+    hidden_path = model.predict(song_timbres) 
+    hidden_path_avg = np.average(hidden_path)
+    songs.loc[index, 'hidden_path_avg'] = hidden_path_avg
+    print(index)
+    print(hidden_path_avg)
 
 A = pd.read_csv("A.csv")
 
@@ -52,6 +94,7 @@ for index, _ in A.iterrows():
         audio_feautures = [[audio_feautures['acousticness'], audio_feautures['danceability'], audio_feautures['energy'], audio_feautures['instrumentalness'], audio_feautures['liveness'], audio_feautures['loudness'], audio_feautures['speechiness'], audio_feautures['valence']]]
         audio_feautures = np.array(audio_feautures)
         all_audio_feautures.extend(audio_feautures)
+        print(index)
         
 all_audio_feautures = np.array(all_audio_feautures)
 audio_feautures_embedded = TSNE(n_components=2).fit_transform(all_audio_feautures)

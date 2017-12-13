@@ -5,12 +5,33 @@ import pandas as pd
 from sklearn import linear_model
 import numpy as np
 import ast
+from collections import defaultdict
 
-from util import *
+
 
 os.chdir("C:\\Users\\fade7001\\Documents\\Resources\\CS229\\CS229 Project")
 
-songs = pd.read_csv("A_N_lda.csv")
+from util import *
+
+import sys
+import csv
+maxInt = sys.maxsize
+decrement = True
+
+while decrement:
+    # decrease the maxInt value by factor 10 
+    # as long as the OverflowError occurs.
+
+    decrement = False
+    try:
+        csv.field_size_limit(maxInt)
+    except OverflowError:
+        maxInt = int(maxInt/10)
+        decrement = True
+        
+songs = pd.read_csv("A_N_lda_hmm.csv", engine='python')
+
+
 
 # evaluates our algorithm against a particular playlist
 playlist_song_titles = {}
@@ -127,6 +148,7 @@ gs = GridSearchCV(estimator = pipe_svc,
 # Accuracy 
 scores = cross_val_score(gs, x_train, y_train, scoring = 'accuracy', cv = 5)
 print('CV accuracy: %.3f +/- %.3f' %(np.mean(scores), np.std(scores)))
+print('Trainaccuracy %.3f' %clf.score(x_train, y_train))
 
 gs = gs.fit(x_train, y_train)
 print(gs.best_score_)
@@ -134,12 +156,9 @@ print(gs.best_params_)
 
 clf = gs.best_estimator_
 clf.fit(x_train, y_train)
-print('Test accuracy %.3f' %clf.score(x_test, y_test))
+print('Train accuracy %.3f' %clf.score(x_train, y_train))
 
-# Best model
-clf = gs.best_estimator_
-clf.fit(X_train, y_train)
-print('Test accuracy: %.3f' % clf.score(X_test, y_test))
+print('Test accuracy %.3f' %clf.score(x_test, y_test))
 
 # Learning curves
 # pipe_lr = Pipeline([
@@ -305,3 +324,118 @@ plt.title('Receiver Operator Characteristic')
 plt.legend(loc = "lower right")
 plt.savefig('ROC_curve.png')
 plt.show()
+
+
+
+
+# Select playlists with more than 30 songs overlap
+msd_song_titles = {}
+
+for index, _ in songs.iterrows():
+    key = songs.loc[index, 'song_artist_title']
+    msd_song_titles[key] = True
+
+playlist_song_titles = {}
+for root, dirs, files in os.walk('./playlists'):
+    files = glob.glob(os.path.join(root, '*.txt'))
+    for f in files:
+        playlist_name = f[12:-4]
+        playlist_name = playlist_name.encode(encoding='ascii', errors='ignore')
+        with open(f, 'r', encoding="utf8") as inFile:
+            lines = [line.rstrip('\n') for line in inFile]
+            overlap = 0
+            for line in lines:
+                if line.lower() in msd_song_titles:
+                    overlap = overlap + 1
+            if overlap > 30:
+                print('Playlist: ' + str(f))
+                print(overlap)
+                playlists_songs=[]
+                for line in lines:
+                    if line.lower() in msd_song_titles:
+                        playlists_songs.append(line.lower())
+                playlist_song_titles[playlist_name] = playlists_songs
+                
+                
+playlist_songs = defaultdict(list)
+
+for index, playlist in enumerate(playlist_song_titles):
+    for playlist_song in playlist_song_titles[playlist]:
+        msd_song = songs.loc[songs.song_artist_title==playlist_song]
+        if not msd_song['audio_features'].tolist():
+            continue
+        audio_features = msd_song['audio_features'].tolist()
+        audio_features = audio_features[0]
+        
+        songArray = []
+        songArray.append(float(msd_song['sentiment_score']) / 4) # 0/1 is too extreme
+        songArray.append(float(msd_song['popularity']))
+        songArray.append(float(msd_song['lda_probs_topic_1']))
+        songArray.append(float(msd_song['lda_probs_topic_2']))
+        songArray.append(float(msd_song['lda_probs_topic_3']))
+        songArray.append(float(msd_song['hidden_path_avg']))
+    
+        songArray.append(normalize(msd_song['year'], MIN_YEAR, MAX_YEAR))
+        
+        song_audio_features = ast.literal_eval(audio_features)[0]
+        audio_features = ['acousticness', 'tempo', 'instrumentalness', 'liveness', 'speechiness', 'valence', 'danceability']
+        
+        if not song_audio_features:
+            continue
+        for feature in audio_features:
+            if feature == 'tempo':
+                songArray.append(normalize(song_audio_features['tempo'], MIN_TEMPO, MAX_TEMPO))
+            else:
+                songArray.append(float(song_audio_features[feature]))
+    
+        playlist_songs[index].append(songArray)
+        
+X = []
+y = []
+
+for y_playlist, data in playlist_songs.items():
+    for x in data:
+        y.extend([y_playlist])
+        X.extend([x])
+
+X = np.array(X)
+y = np.array(y)
+
+from sklearn.multiclass import OneVsRestClassifier
+from sklearn.svm import LinearSVC
+from sklearn.cross_validation import train_test_split
+
+x_train, x_test, y_train, y_test = \
+    train_test_split(X, y,
+    test_size = 0.2, random_state = 0)
+    
+# Tuning hyperparameters via grid search
+model_to_set = OneVsRestClassifier(SVC(random_state=1, probability=True))
+    
+sc = StandardScaler()
+sc.fit(x_train)
+x_train_std = sc.transform(x_train)
+x_test_std = sc.transform(x_test)
+
+param_range = [0.0001, 0.001, 0.01, 0.1, 1.0, 10.0, 100.0, 1000.0]
+
+param_grid = [{'estimator__C': param_range,
+               'estimator__kernel':['linear']},
+                {'estimator__C': param_range,
+                'estimator__clf__estimator__gamma': param_range,
+                'estimator__clf__estimator__kernel': ['rbf']}]
+
+gs = GridSearchCV(estimator = model_to_set,
+                  param_grid = param_grid,
+                  scoring = 'accuracy',
+                  cv = 5,
+                  n_jobs = -1)
+
+scores = cross_val_score(gs, x_train_std, y_train, scoring = 'accuracy', cv = 5)
+print('CV accuracy: %.3f +/- %.3f' %(np.mean(scores), np.std(scores)))
+print('Trainaccuracy %.3f' %clf.score(x_train, y_train))
+
+gs.fit(x_train_std, y_train)
+
+print(model_tunning.best_score_)
+print(model_tunning.best_params_)
