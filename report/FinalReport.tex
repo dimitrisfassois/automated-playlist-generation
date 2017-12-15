@@ -207,6 +207,7 @@ loudness of the segment, the second one describes brightness, the third one desc
 We subsequently trained a hidden Markov model on the timbre sequence of a random sample of 5,000 songs. The model is fit using the EM algorithm which is a gradient-based optimization method and can therefore get stuck in local optima. For this reason we fit the model with various initializations and selected the highest scoring one.
 The inferred optimal hidden states of the timbre segments of all songs were predicted by the model, employing the Viterbi algorithm.
 For each song the optimal hidden states were averaged to provide a single description of the path followed, which was used as an additional feature by the final model.
+For the training data the average value of the timbre which had a hidden value of 1 was 4.96, for hidden value of 1 they had an average value of the timbre of 13.76 and for a hidden value of 2 an average of -5.35.
 
 % Head 2
 \subsection{Sentiment analysis}
@@ -299,6 +300,9 @@ contains function calls, assignments, if clauses, and while loops.
 
 \subsection{Classification}
 
+We first applied binary classification using a single playlist ('60s, 70s, 80s Classic Rock') as the target and randomly selecting songs that didn't belong to it as well. The training set consisted of 98 songs, while the test set included 34 songs. After standardizing the features we performed grid search on the hyper-parameters for a logistic regression and support vector machine classifier. For logistic regression the regularization strength was fine tuned employing 10-fold cross-validation, while for the support vector classifier the regularization was also optimized using grid search. The other parameters that were chosen during cross validation were the kernel (linear or exponential). For the exponential kernel $e^{-\gamma {\Vert x -x' \Vert}^{2}}$ the $\gamma$ parameter was also optimized. 
+
+
 The objective of variable coalescence-based offset assignment is to find
 both the coalescence scheme and the MWPC on the coalesced graph. We start
 with a few definitions and lemmas for variable coalescence.
@@ -336,44 +340,72 @@ coalescing were made).
 
 \section{Results}
 
-During all the experiments, the Geographic Forwarding (GF) by Akyildiz
-% et al.~\shortcite{Akyildiz-01} routing protocol is used. GF exploits
-geographic information of nodes and conducts local data-forwarding to
-achieve end-to-end routing. Our simulation is configured according to
-% the settings in Table~\ref{tab:one}. Each run lasts for 2 minutes and
-repeated 100 times. For each data value we present in the results, we
-also give its 90\% confidence interval.
+Results for the two main methodologies followed are presented below.
 
+
+\subsection{Classification}
+The logistic regression model achieved training accuracy of 95.9\% and CV accuracy of 94.8\%. The SVC outperformed the logistic regression model, with the best model achieving training accuracy of 96.9\% and CV accuracy of 95.9\%. The best model's parameters used a linear kernel with regularization. The final test accuracy for the SVC was 94.1\%. .
+The learning curve for the svm model is presented below in figure \ref{fig:learning_curve} and it shows that it generalizes well over unseen data.
+\newline
+
+The validation curve for the SVC model can be seen below in figure \ref{fig:validation_curve}, which justifies how the particular value for the regularization hyper-parameter was chosen. The cross-validation accuracy decreases as the regularization parameter C increases even though the training accuracy keeps increasing, which would indicate overfitting.
+
+The confusion matrix for the SVC model on the test data can also be seen below in figure \ref{fig:confusion_matrix}.
+
+The ROC curve is also plotted below in figure \ref{fig:ROC_curve} which shows an excellent area under the curve.
+
+%figure
+\begin{figure}[h]
+  \includegraphics[width=0.5\textwidth]{learning_curve}
+  \caption{Learning curve for SVC}
+  \label{fig:learning_curve}
+\end{figure}
+
+%figure
+\begin{figure}[h]
+  \includegraphics[width=0.5\textwidth]{validation_curve}
+  \caption{Validation curve for SVC}
+  \label{fig:validation_curve}
+\end{figure}
+
+%figure
+\begin{figure}[h]
+  \includegraphics[width=0.33\textwidth]{confusion_matrix}
+  \caption{Confusion matrix for SVC}
+  \label{fig:confusion_matrix}
+\end{figure}
+
+%figure
+\begin{figure}[h]
+  \includegraphics[width=0.5\textwidth]{ROC_curve}
+  \caption{ROC curve for SVC}
+  \label{fig:ROC_curve}
+\end{figure}
+
+\newpage
 % Table
 \begin{table}%
-\caption{Simulation Configuration}
+\caption{SVC performance on single playlist}
 \label{tab:one}
 \begin{minipage}{\columnwidth}
 \begin{center}
 \begin{tabular}{ll}
   \toprule
-  TERRAIN\footnote{This is a table footnote. This is a
-    table footnote. This is a table footnote.}   & (200m$\times$200m) Square\\
-  Node Number     & 289\\
-  Node Placement  & Uniform\\
-  Application     & Many-to-Many/Gossip CBR Streams\\
-  Payload Size    & 32 bytes\\
-  Routing Layer   & GF\\
-  MAC Layer       & CSMA/MMSN\\
-  Radio Layer     & RADIO-ACCNOISE\\
-  Radio Bandwidth & 250Kbps\\
-  Radio Range     & 20m--45m\\
+  Test accuracy    & 94.1\%\\
+  Recall  & 100\%\\
+  Precision    & 88.2\%\\
+  F1-score    & 93.7\%\\
   \bottomrule
 \end{tabular}
 \end{center}
 \bigskip\centering
-\footnotesize\emph{Source:} This is a table
- sourcenote. This is a table sourcenote. This is a table
- sourcenote.
-
- \emph{Note:} This is a table footnote.
+\footnotesize
+ \emph{Precision scores for SVC model} 
 \end{minipage}
 \end{table}%
+\newpage
+We also applied multi-class classification for 27 playlists for which we had more than 30 songs in our dataset. With this modeling technique called one-vs-all classification, one classifier is fitted for each class against all of the other classes. The training set consisted of 1265 songs, while the test set included 317 songs. Given the superior performance of the SVC model on one playlist, we optimized it in the multi-class setting using grid search and cross-validation.  
+
 
 
 \section{Conclusions}
