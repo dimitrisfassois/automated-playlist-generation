@@ -216,7 +216,41 @@ The ROC curve is also plotted below in figure \ref{fig:ROC_curve} which shows an
 \end{minipage}
 \end{table}%
 \newpage
-We also applied multi-class classification for 27 playlists for which we had more than 30 songs in our dataset. With this modeling technique called one-vs-all classification, one classifier is fitted for each class against all of the other classes. The training set consisted of 1265 songs, while the test set included 317 songs. Given the superior performance of the SVC model on one playlist, we optimized it in the multi-class setting using grid search and cross-validation.
+We also applied multi-class classification for 27 playlists for which we had more than 30 songs in our dataset. With this modeling technique called one-vs-all classification, one classifier is fitted for each class against all of the other classes. The training set consisted of 1265 songs, while the test set included 317 songs. Given the superior performance of the SVC model on one playlist, we optimized it in the multi-class setting using grid search and cross-validation. The grid search for the multi-class SVC yielded a model with training accuracy of 48\% and CV accuracy of 29\%. Grid search with cross-validation was also performed on a random forest model in order to estimate the number of trees in the forest, the number of features to consider for the best split, the maximum depth of the tree, the minimum number of samples required to split an internal node, the minimum number of samples required for a leaf node, whether bootstrap samples are used and what criterion between Gini impurity and entropy is used for a split. The best random forest model achieved a training accuracy of 53.4\% and cross-validated accuracy of 32.3\%. The test accuracy was 35.3\%. The feature importance from the random forest in order of usefulness can be seen in the plot below. Importance is calculated for each feature from the amount that each split improves the performance criterion, weighted by the number of observations of the node. 
+%figure
+\begin{figure}[h]
+  \includegraphics[width=0.5\textwidth]{feature_importance2.png}
+  \caption{Figure: Feature importance of random forest for multi-class prediction}
+  \label{fig:ROC_curve}
+\end{figure}
+
+\newpage
+
+We also applied another technique, employing a random forest classifier and encoding each tree as a feature index in a new high-dimensional feature space. Then we applied a logistic regression model on this sparse, high-dimensional one-hot encoded embedding of the data. The test set accuracy achieved with this method was 30.9\%.
+The final technique that was employed was an ensemble method, namely plurality voting, which selects the playlist that received the most votes from the majority of a group of classifiers. The classifiers we implemented for plurality voting were logistic regression, SVC, decision tree, random forest and KNN. The cross-validated accuracy of the plurality voting ensemble was 33\% $\pm$ 2\%. The classifiers' cross-validated accuracy is summarized in table \ref{tab:two}.  
+% Table
+\begin{table}%
+\caption{Cross-validated accuracy of classifiers in plurality voting}
+\label{tab:two}
+\begin{minipage}{\columnwidth}
+\begin{center}
+\begin{tabular}{ll}
+  \toprule
+  Logistic Regression    & $29\% \pm 2\%$\\
+  SVC  & $27\% \pm 1\%$\\
+  Decision Tree  & $25\% \pm 1\%$\\
+  Random Forest  & $32\% \pm 1\%$\\
+  KNN  & $22\% \pm 2\%$\\
+  Plurality Voting  & $33\% \pm 2\%$\\
+  \bottomrule
+\end{tabular}
+\end{center}
+\bigskip\centering
+\footnotesize
+ \emph{Plurality voting CV performance} 
+\end{minipage}
+\end{table}%
+\newpage
 
 \subsection{Graph}
 
