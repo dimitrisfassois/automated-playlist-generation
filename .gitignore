@@ -8,3 +8,4 @@ mxm_dataset_full.txt
 *.synctex.gz
 *.bbl
 *.blg
+*.out

@@ -14,7 +14,6 @@ with open('./playlists/60s, 70s, 80s Classic Rock.txt', 'r') as inFile:
 good_songs = []
 flat_songs = []
 playlist_songs = {}
-neg_examples = [] # random selection of negative examples
 i = 0
 
 print 'Reading in dataset...'
@@ -67,7 +66,7 @@ def shortest_path(k, song1_index, song2_index):
     V = len(neighborhood)
     print 'Songs within bounding area: ' + str(V)
 
-    if (V < k or V > 2000):
+    if (V < k or V > 4000):
         return 0
 
     # get new indexes of songs in the cut down neighborhood
@@ -188,8 +187,6 @@ for playlist_name in best_playlists:
         key = good_songs[i]['song_artist_title']
         if key in playlist_song_titles:
             playlist_songs[key] = np.array(flat_songs[i])
-        elif i < 3000:
-            neg_examples.append(np.array(flat_songs[i]))
 
     playlist = playlist_songs.values()
     playlist_len = len(playlist)
