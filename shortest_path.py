@@ -18,7 +18,7 @@ neg_examples = [] # random selection of negative examples
 i = 0
 
 print 'Reading in dataset...'
-songs = pd.read_csv("/Users/kade/LocalDocs/A_N_lda.csv")
+songs = pd.read_csv("/Users/kade/LocalDocs/A_N_lda_hmm3.csv")
 for index, _ in songs.iterrows():
     song = songs.iloc[index]
     # some songs have 'NONE' as the audio feature
@@ -188,7 +188,7 @@ for playlist_name in best_playlists:
         key = good_songs[i]['song_artist_title']
         if key in playlist_song_titles:
             playlist_songs[key] = np.array(flat_songs[i])
-        elif i < 1000:
+        elif i < 3000:
             neg_examples.append(np.array(flat_songs[i]))
 
     playlist = playlist_songs.values()

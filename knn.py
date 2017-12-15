@@ -7,7 +7,7 @@ good_songs = []
 flat_songs = []
 
 print 'Reading in dataset...'
-songs = pd.read_csv("/Users/kade/LocalDocs/A_N_lda.csv")
+songs = pd.read_csv("/Users/kade/LocalDocs/A_N_lda_hmm3.csv")
 for index, _ in songs.iterrows():
     song = songs.iloc[index]
 

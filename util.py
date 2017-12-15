@@ -36,6 +36,7 @@ def flatten_song(song):
     songArray.append(float(song['lda_probs_topic_1']))
     songArray.append(float(song['lda_probs_topic_2']))
     songArray.append(float(song['lda_probs_topic_3']))
+    songArray.append(float(song['hidden_path_avg']))
 
     songArray.append(normalize(song['year'], MIN_YEAR, MAX_YEAR))
 
