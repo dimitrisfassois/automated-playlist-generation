@@ -6,6 +6,7 @@
 \usepackage{graphicx}
 \usepackage[export]{adjustbox}
 \usepackage{float}
+\usepackage{natbib}
 
 % TOG prefers author-name bib system with square brackets
 \citestyle{acmauthoryear}
@@ -51,7 +52,7 @@
 \begin{document}
 % Title portion
 \title{A Multifrequency MAC Specially Designed for Wireless Sensor
-  Network Applications} 
+  Network Applications}
 
 \author{Gang Zhou}
 \orcid{1234-5678-9012-3456}
@@ -70,11 +71,11 @@
   \country{France}
 }
 \email{beranger@inria.fr}
-\author{Aparna Patel} 
+\author{Aparna Patel}
 \affiliation{%
  \institution{Rajiv Gandhi University}
  \streetaddress{Rono-Hills}
- \city{Doimukh} 
+ \city{Doimukh}
  \state{Arunachal Pradesh}
  \country{India}}
 \email{aprna_patel@rguhs.ac.in}
@@ -82,7 +83,7 @@
 \affiliation{%
   \institution{Tsinghua University}
   \streetaddress{30 Shuangqing Rd}
-  \city{Haidian Qu} 
+  \city{Haidian Qu}
   \state{Beijing Shi}
   \country{China}
 }
@@ -145,24 +146,24 @@ synchronization errors.
 
 
 As a new technology, Wireless Sensor Networks (WSNs) has a wide
-range of applications \cite{Culler-01, Bahl-02, Akyildiz-01}, including
+% range of applications \cite{Culler-01, Bahl-02, Akyildiz-01}, including
 environment monitoring, smart buildings, medical care, industrial and
 military applications. Among them, a recent trend is to develop
 commercial sensor networks that require pervasive sensing of both
 environment and human beings, for example, assisted living
-\cite{Akyildiz-02, Harvard-01,CROSSBOW} and smart homes
-\cite{Harvard-01, Adya-01,CROSSBOW}.
+% \cite{Akyildiz-02, Harvard-01,CROSSBOW} and smart homes
+% \cite{Harvard-01, Adya-01,CROSSBOW}.
 % quote
 \begin{quote}
   ``For these applications, sensor devices are incorporated into human
-  cloths \cite{Natarajan-01, Zhou-06, Bahl-02, Adya-01} for monitoring
+  % cloths \cite{Natarajan-01, Zhou-06, Bahl-02, Adya-01} for monitoring
   health related information like EKG readings, fall detection, and
   voice recognition''.
 \end{quote}
 While collecting all these multimedia information
-\cite{Akyildiz-02} requires a high network throughput, off-the-shelf
+% \cite{Akyildiz-02} requires a high network throughput, off-the-shelf
 sensor devices only provide very limited bandwidth in a single
-channel: 19.2\,Kbps in MICA2 \cite{Bahl-02} and 250\,Kbps in MICAz.
+% channel: 19.2\,Kbps in MICA2 \cite{Bahl-02} and 250\,Kbps in MICAz.
 
 In this article, we propose MMSN, abbreviation for Multifrequency
 Media access control for wireless Sensor Networks. The main
@@ -174,13 +175,13 @@ multifrequency MAC protocol especially designed for WSNs, in which
 each device is equipped with a single radio transceiver and
 the MAC layer packet size is very small.
 \item Instead of using pairwise RTS/CTS frequency negotiation
-\cite{Adya-01, Culler-01, Tzamaloukas-01, Zhou-06},
+% \cite{Adya-01, Culler-01, Tzamaloukas-01, Zhou-06},
 we propose lightweight frequency assignments, which are good choices
 for many deployed comparatively static WSNs.
 \item We develop new toggle transmission and snooping techniques to
 enable a single radio transceiver in a sensor device to achieve
 scalable performance, avoiding the nonscalable ``one
-control channel + multiple data channels'' design \cite{Natarajan-01}.
+% control channel + multiple data channels'' design \cite{Natarajan-01}.
 \end{itemize}
 
 % Head 1
@@ -217,15 +218,15 @@ where $t=0,{\ldots}\,,T$, and $b$ is a number greater than $1$.
 i=\lfloor(T+1)\log_b[\alpha(b-1)+1]\rfloor.
 \]
 It can be easily proven that the distribution of $i$ conforms to Equation
-(\ref{eqn:01}).
+% (\ref{eqn:01}).
 
-So protocols \cite{Bahl-02, Culler-01,Zhou-06,Adya-01,
-Tzamaloukas-01, Akyildiz-01} that use RTS/CTS
+% So protocols \cite{Bahl-02, Culler-01,Zhou-06,Adya-01,
+% Tzamaloukas-01, Akyildiz-01} that use RTS/CTS
 controls\footnote{RTS/CTS controls are required to be implemented by
 802.11-compliant devices. They can be used as an optional mechanism
-to avoid Hidden Terminal Problems in the 802.11 standard and
-protocols based on those similar to \cite{Akyildiz-01} and
-\cite{Adya-01}.} for frequency negotiation and reservation are not
+to avoid Hidden Terminal Problems in the 802.11 standard and}
+% protocols based on those similar to \cite{Akyildiz-01} and
+for frequency negotiation and reservation are not
 suitable for WSN applications, even though they exhibit good
 performance in general wireless ad-hoc
 networks.
@@ -253,13 +254,13 @@ Timbre is defined as the perceived sound quality of a musical note, sound or ton
 surface, ordered by degree of importance. For example, the first dimension represents the average
 loudness of the segment, the second one describes brightness, the third one describes the flatness of a sound, the fourth describes sounds with a stronger attack etc. We averaged the vector features for every time segment for each song, in order to have a time series of the actual timbre of each segment.
 We subsequently trained a hidden Markov model on the timbre sequence of a random sample of 5,000 songs. The model is fit using the EM algorithm which is a gradient-based optimization method and can therefore get stuck in local optima. For this reason we fit the model with various initializations and selected the highest scoring one.
-The inferred optimal hidden states of the timbre segments of all songs were predicted by the model, employing the Viterbi algorithm.  
+The inferred optimal hidden states of the timbre segments of all songs were predicted by the model, employing the Viterbi algorithm.
 For each song the optimal hidden states were averaged to provide a single description of the path followed, which was used as an additional feature by the final model.
 
 % Head 2
 \subsection{Sentiment analysis}
 
-As Algorithm~\ref{alg:one} states, for each frequency
+% As Algorithm~\ref{alg:one} states, for each frequency
 number, each node calculates a random number (${\textit{Rnd}}_{\alpha}$) for
 itself and a random number (${\textit{Rnd}}_{\beta}$) for each of its two-hop
 neighbors with the same pseudorandom number generator.
@@ -321,7 +322,7 @@ hops?
 \section{Modeling}
 \label{sec:sim}
 
-Two different methodologies were pursued. In the first one we tried different classification algorithms both for a single playlist prediction and multiclass prediction for 26 playlists. In the second 
+Two different methodologies were pursued. In the first one we tried different classification algorithms both for a single playlist prediction and multiclass prediction for 26 playlists. In the second
 % enumerate
 \begin{enumerate}
 \item Load state into microcontroller model.
@@ -333,14 +334,14 @@ Two different methodologies were pursued. In the first one we tried different cl
       \end{enumerate}
 \item Return resulting states.
 \end{enumerate}
-Figure~\ref{fig:one} shows a typical microcontroller C program that
+% Figure~\ref{fig:one} shows a typical microcontroller C program that
 controls an automotive power window lift. The program is one of the
-programs used in the case study described in Section~\ref{sec:sim}.
+% programs used in the case study described in Section~\ref{sec:sim}.
 At first sight, the programs looks like an ANSI~C program. It
 contains function calls, assignments, if clauses, and while loops.
 % Figure
 \begin{figure}
-  \includegraphics{mouse}
+  % \includegraphics{mouse}
   \caption{Code before preprocessing.}
   \label{fig:one}
 \end{figure}
@@ -385,10 +386,10 @@ coalescing were made).
 \section{Results}
 
 During all the experiments, the Geographic Forwarding (GF) by Akyildiz
-et al.~\shortcite{Akyildiz-01} routing protocol is used. GF exploits
+% et al.~\shortcite{Akyildiz-01} routing protocol is used. GF exploits
 geographic information of nodes and conducts local data-forwarding to
 achieve end-to-end routing. Our simulation is configured according to
-the settings in Table~\ref{tab:one}. Each run lasts for 2 minutes and
+% the settings in Table~\ref{tab:one}. Each run lasts for 2 minutes and
 repeated 100 times. For each data value we present in the results, we
 also give its 90\% confidence interval.
 
@@ -438,39 +439,39 @@ back-off algorithms for the slotted media access design.
 % Start of "Sample References" section
 
 \section{Typical References in New ACM Reference Format}
-A paginated journal article \cite{Abril07}, an enumerated
-journal article \cite{Cohen07}, a reference to an entire issue \cite{JCohen96},
-a monograph (whole book) \cite{Kosiur01}, a monograph/whole book in a series (see 2a in spec. document)
-\cite{Harel79}, a divisible-book such as an anthology or compilation \cite{Editor00}
-followed by the same example, however we only output the series if the volume number is given
-\cite{Editor00a} (so Editor00a's series should NOT be present since it has no vol. no.),
-a chapter in a divisible book \cite{Spector90}, a chapter in a divisible book
-in a series \cite{Douglass98}, a multi-volume work as book \cite{Knuth97},
-an article in a proceedings (of a conference, symposium, workshop for example)
-(paginated proceedings article) \cite{Andler79}, a proceedings article
-with all possible elements \cite{Smith10}, an example of an enumerated
-proceedings article \cite{VanGundy07},
-an informally published work \cite{Harel78}, a doctoral dissertation \cite{Clarkson85},
-a master's thesis: \cite{anisi03}, an online document / world wide web
-resource \cite{Thornburg01, Ablamowicz07, Poker06}, a video game (Case 1) \cite{Obama08} and (Case 2) \cite{Novak03}
-and \cite{Lee05} and (Case 3) a patent \cite{JoeScientist001},
-work accepted for publication \cite{rous08}, 'YYYYb'-test for prolific author
-\cite{SaeediMEJ10} and \cite{SaeediJETC10}. Other cites might contain
-'duplicate' DOI and URLs (some SIAM articles) \cite{Kirschmer:2010:AEI:1958016.1958018}.
-Boris / Barbara Beeton: multi-volume works as books
-\cite{MR781536} and \cite{MR781537}.
+% A paginated journal article \cite{Abril07}, an enumerated
+% journal article \cite{Cohen07}, a reference to an entire issue \cite{JCohen96},
+% a monograph (whole book) \cite{Kosiur01}, a monograph/whole book in a series (see 2a in spec. document)
+% \cite{Harel79}, a divisible-book such as an anthology or compilation \cite{Editor00}
+% followed by the same example, however we only output the series if the volume number is given
+% \cite{Editor00a} (so Editor00a's series should NOT be present since it has no vol. no.),
+% a chapter in a divisible book \cite{Spector90}, a chapter in a divisible book
+% in a series \cite{Douglass98}, a multi-volume work as book \cite{Knuth97},
+% an article in a proceedings (of a conference, symposium, workshop for example)
+% (paginated proceedings article) \cite{Andler79}, a proceedings article
+% with all possible elements \cite{Smith10}, an example of an enumerated
+% proceedings article \cite{VanGundy07},
+% an informally published work \cite{Harel78}, a doctoral dissertation \cite{Clarkson85},
+% a master's thesis: \cite{anisi03}, an online document / world wide web
+% resource \cite{Thornburg01, Ablamowicz07, Poker06}, a video game (Case 1) \cite{Obama08} and (Case 2) \cite{Novak03}
+% and \cite{Lee05} and (Case 3) a patent \cite{JoeScientist001},
+% work accepted for publication \cite{rous08}, 'YYYYb'-test for prolific author
+% \cite{SaeediMEJ10} and \cite{SaeediJETC10}. Other cites might contain
+% 'duplicate' DOI and URLs (some SIAM articles) \cite{Kirschmer:2010:AEI:1958016.1958018}.
+% Boris / Barbara Beeton: multi-volume works as books
+% \cite{MR781536} and \cite{MR781537}.
 
 A couple of citations with DOIs: \cite{2004:ITE:1009386.1010128,
-  Kirschmer:2010:AEI:1958016.1958018}. 
+  Kirschmer:2010:AEI:1958016.1958018}.
 
-Online citations: \cite{TUGInstmem, Thornburg01, CTANacmart}.  
+% Online citations: \cite{TUGInstmem, Thornburg01, CTANacmart}.
 
 % Appendix
 \appendix
 \section{Switching Times}
 
 In this appendix, we measure the channel switching time of Micaz
-\cite{CROSSBOW} sensor devices.  In our experiments, one mote
+% \cite{CROSSBOW} sensor devices.  In our experiments, one mote
 alternatingly switches between Channels~11 and~12. Every time after
 the node switches to a channel, it sends out a packet immediately and
 then changes to a new channel as soon as the transmission is finished.
@@ -515,7 +516,7 @@ The primary consumer of energy in WSNs is idle listening. The key to
 reduce idle listening is executing low duty-cycle on nodes. Two
 primary approaches are considered in controlling duty-cycles in the
 MAC layer.
-  
+
 \end{screenonly}
 
 \begin{acks}
@@ -544,7 +545,7 @@ multi-channel, radio interference, time synchronization}
 
 \maketitle
 
-\input{samplebody-journals}
+%\input{samplebody-journals}
 
 
 
