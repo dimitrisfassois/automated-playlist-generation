@@ -98,7 +98,7 @@ for index, _ in songs.iterrows():
         lyrics = ast.literal_eval(song['todo'])
         lyrics = list(lyrics.keys())
         songs_lyrics[songs.loc[index, 'song_artist_title']] = lyrics
-        print(songs.loc[index, 'song_artist_title'])
+        print(index)
 
 
 # prints the count of songs we have data on from each playlist
@@ -122,7 +122,7 @@ for root, dirs, files in os.walk('./playlists'):
             for line in lines:
                 if line.lower() in msd_song_titles:
                     overlap = overlap + 1
-            if overlap > 5:
+            if overlap > 20:
                 print('Playlist: ' + str(f))
                 print(overlap)
                 playlist_song_titles[playlist_name] = lines
@@ -215,4 +215,4 @@ for song in songs_lyrics.keys():
     songs.loc[songs['song_artist_title']==song, 'lda_probs_topic_2'] = probs[1]
     songs.loc[songs['song_artist_title']==song, 'lda_probs_topic_3'] = probs[2]
 
-songs.to_csv('A_N_lda.csv')
+songs.to_csv('A_N_lda2.csv')

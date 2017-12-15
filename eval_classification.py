@@ -29,7 +29,7 @@ while decrement:
         maxInt = int(maxInt/10)
         decrement = True
         
-songs = pd.read_csv("A_N_lda_hmm.csv", engine='python')
+songs = pd.read_csv("A_N_lda_hmm3.csv", engine='python')
 
 
 
@@ -127,7 +127,35 @@ from sklearn.cross_validation import StratifiedKFold
 # Split dataset in train, test 
 # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 1)
 
-# Tuning hyperparameters via grid search
+# Tuning hyperparameters for logistic regression
+pipe_logistic = Pipeline([('scl', StandardScaler()), 
+                     ('clf', LogisticRegression(penalty='l2'))])
+    
+param_grid = {'clf__C': [0.001, 0.01, 0.1, 1, 10, 100, 1000] }
+
+gs = GridSearchCV(estimator = pipe_logistic,
+                  param_grid = param_grid,
+                  scoring = 'accuracy',
+                  cv = 10,
+                  n_jobs = -1)
+
+gs.fit(x_train, y_train)
+clf = gs.best_estimator_
+
+gs = gs.fit(x_train, y_train)
+print(gs.best_score_)
+print(gs.best_params_)
+
+clf.fit(x_train, y_train)
+
+print('Train accuracy %.3f' %clf.score(x_train, y_train))
+
+print('Test accuracy %.3f' %clf.score(x_test, y_test))
+
+
+
+
+# Tuning hyperparameters for svc via grid search
 pipe_svc = Pipeline([('scl', StandardScaler()), 
                      ('clf', SVC(random_state=1, probability=True))])
 
@@ -202,7 +230,7 @@ plt.ylabel('Accuracy')
 plt.legend(loc='lower right')
 plt.ylim([0.8, 1.0])
 plt.savefig('learning_curve.png')
-plt.show
+plt.show()
 
 
 
@@ -262,6 +290,7 @@ for i in range(confmat.shape[0]):
 
 plt.xlabel('predicted label')
 plt.ylabel('true label')
+plt.tight_layout()
 plt.savefig('confusion_matrix.png')
 plt.show()
 
@@ -322,6 +351,7 @@ plt.xlabel('false positive rate')
 plt.ylabel('true positive rate')
 plt.title('Receiver Operator Characteristic')
 plt.legend(loc = "lower right")
+plt.tight_layout()
 plt.savefig('ROC_curve.png')
 plt.show()
 
@@ -422,8 +452,8 @@ param_range = [0.0001, 0.001, 0.01, 0.1, 1.0, 10.0, 100.0, 1000.0]
 param_grid = [{'estimator__C': param_range,
                'estimator__kernel':['linear']},
                 {'estimator__C': param_range,
-                'estimator__clf__estimator__gamma': param_range,
-                'estimator__clf__estimator__kernel': ['rbf']}]
+                'estimator__gamma': param_range,
+                'estimator__kernel': ['rbf']}]
 
 gs = GridSearchCV(estimator = model_to_set,
                   param_grid = param_grid,
@@ -437,5 +467,299 @@ print('Trainaccuracy %.3f' %clf.score(x_train, y_train))
 
 gs.fit(x_train_std, y_train)
 
-print(model_tunning.best_score_)
-print(model_tunning.best_params_)
+print(gs.best_score_)
+print(gs.best_params_)
+
+clf = gs.best_estimator_
+print('Trainaccuracy %.3f' %clf.score(x_train_std, y_train))
+
+print('Test accuracy %.3f' %clf.score(x_test_std, y_test))
+
+
+example_model = OneVsRestClassifier(SVC(random_state=1, probability=True, kernel='rbf'))
+example_model.fit(x_train_std, y_train)
+preds=example_model.predict(x_train_std)
+(preds==y_train).sum()/y_train.shape[0]
+test_preds=example_model.predict(x_test_std)
+(test_preds==y_test).sum()/y_test.shape[0]
+
+
+from sklearn.ensemble import RandomForestClassifier
+rfc = RandomForestClassifier(n_estimators=20)
+
+# use a full grid over all parameters
+param_grid = {"n_estimators": [20, 50, 100],
+                "max_depth": [3, None],
+              "max_features": [1, 3, 10],
+              "min_samples_split": [2, 3, 10],
+              "min_samples_leaf": [1, 3, 10],
+              "bootstrap": [True, False],
+              "criterion": ["gini", "entropy"]}
+
+grid_search  = GridSearchCV(estimator=rfc, param_grid=param_grid, cv= 5)
+
+grid_search.fit(x_train_std, y_train)
+
+print(grid_search.best_score_)
+print(grid_search.best_params_)
+
+clf = grid_search.best_estimator_
+print('Trainaccuracy %.3f' %clf.score(x_train_std, y_train))
+print('Test accuracy %.3f' %clf.score(x_test_std, y_test))
+
+
+
+
+importances = clf.feature_importances_
+std = np.std([tree.feature_importances_ for tree in clf.estimators_],
+             axis=0)
+indices = np.argsort(importances)[::-1]
+
+# Print the feature ranking
+print("Feature ranking:")
+
+for f in range(x_train.shape[1]):
+    print("%d. feature %d (%f)" % (f + 1, indices[f], importances[indices[f]]))
+
+xlabels = ['sentiment_score', 'popularity', 'lda_probs_topic_1', 'lda_probs_topic_2', 'lda_probs_topic_3', 'hidden_path_avg', 'year', 'acousticness', 'tempo', 'instrumentalness', 'liveness', 'speechiness', 'valence', 'danceability']
+xlabels = [xlabels[i] for i in indices]
+
+# Plot the feature importances of the forest
+plt.figure()
+plt.title("Feature importances")
+ax = plt.gca()
+plt.setp(ax.get_xticklabels(), fontsize=10, rotation='vertical')
+plt.bar(range(X.shape[1]), importances[indices],
+       color="r", yerr=std[indices], align="center")
+plt.xticks(range(X.shape[1]), xlabels)
+plt.xlim([-1, X.shape[1]])
+plt.tight_layout()
+plt.savefig('feature_importance2.png')
+plt.show()
+
+
+
+# It is important to train the ensemble of trees on a different subset
+# of the training data than the linear regression model to avoid
+# overfitting, in particular if the total number of leaves is
+# similar to the number of training samples
+X_train, X_train_lr, y_train_2, y_train_lr = train_test_split(x_train,
+                                                            y_train,
+                                                            test_size=0.5)
+
+#### Feature transformations with ensembles of trees
+# Unsupervised transformation based on totally random trees
+from sklearn.ensemble import RandomTreesEmbedding
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import OneHotEncoder
+
+rt = RandomTreesEmbedding(max_depth=3, n_estimators=100,
+    random_state=0)
+
+rt_lm = OneVsRestClassifier(LogisticRegression())
+pipeline = make_pipeline(rt, rt_lm)
+pipeline.fit(X_train, y_train_2)
+
+y_pred_rt = pipeline.predict_proba(x_test)
+y_pred_rt = np.argmax(y_pred_rt, axis = 1)
+accuracy = (y_pred_rt == y_test).sum() / y_test.shape[0]
+
+n_estimator = 100
+# Supervised transformation based on random forests
+sc_X = StandardScaler()
+sc_X.fit(X_train)
+X_train_std = sc.transform(x_train)
+
+rf = RandomForestClassifier(max_depth=3, n_estimators=n_estimator)
+rf_enc = OneHotEncoder()
+rf_lm = OneVsRestClassifier(LogisticRegression())
+rf.fit(X_train, y_train_2)
+rf_enc.fit(rf.apply(X_train))
+rf_lm.fit(rf_enc.transform(rf.apply(X_train_lr)), y_train_lr)
+
+y_pred_rf_lm = rf_lm.predict_proba(rf_enc.transform(rf.apply(x_test)))
+y_pred_rf_lm = np.argmax(y_pred_rf_lm, axis = 1)
+accuracy_rf_lm  = (y_pred_rf_lm == y_test).sum() / y_test.shape[0]
+
+
+from sklearn.base import BaseEstimator
+from sklearn.base import ClassifierMixin
+from sklearn.preprocessing import LabelEncoder
+from sklearn.externals import six
+from sklearn.base import clone
+from sklearn.pipeline import _name_estimators
+import numpy as np
+import operator
+
+
+class MajorityVoteClassifier(BaseEstimator, 
+                             ClassifierMixin):
+    """ A majority vote ensemble classifier
+
+    Parameters
+    ----------
+    classifiers : array-like, shape = [n_classifiers]
+      Different classifiers for the ensemble
+
+    vote : str, {'classlabel', 'probability'} (default='label')
+      If 'classlabel' the prediction is based on the argmax of
+        class labels. Else if 'probability', the argmax of
+        the sum of probabilities is used to predict the class label
+        (recommended for calibrated classifiers).
+
+    weights : array-like, shape = [n_classifiers], optional (default=None)
+      If a list of `int` or `float` values are provided, the classifiers
+      are weighted by importance; Uses uniform weights if `weights=None`.
+
+    """
+    def __init__(self, classifiers, vote='classlabel', weights=None):
+
+        self.classifiers = classifiers
+        self.named_classifiers = {key: value for key, value
+                                  in _name_estimators(classifiers)}
+        self.vote = vote
+        self.weights = weights
+
+    def fit(self, X, y):
+        """ Fit classifiers.
+
+        Parameters
+        ----------
+        X : {array-like, sparse matrix}, shape = [n_samples, n_features]
+            Matrix of training samples.
+
+        y : array-like, shape = [n_samples]
+            Vector of target class labels.
+
+        Returns
+        -------
+        self : object
+
+        """
+        if self.vote not in ('probability', 'classlabel'):
+            raise ValueError("vote must be 'probability' or 'classlabel'"
+                             "; got (vote=%r)"
+                             % self.vote)
+
+        if self.weights and len(self.weights) != len(self.classifiers):
+            raise ValueError('Number of classifiers and weights must be equal'
+                             '; got %d weights, %d classifiers'
+                             % (len(self.weights), len(self.classifiers)))
+
+        # Use LabelEncoder to ensure class labels start with 0, which
+        # is important for np.argmax call in self.predict
+        self.lablenc_ = LabelEncoder()
+        self.lablenc_.fit(y)
+        self.classes_ = self.lablenc_.classes_
+        self.classifiers_ = []
+        for clf in self.classifiers:
+            fitted_clf = clone(clf).fit(X, self.lablenc_.transform(y))
+            self.classifiers_.append(fitted_clf)
+        return self
+
+    def predict(self, X):
+        """ Predict class labels for X.
+
+        Parameters
+        ----------
+        X : {array-like, sparse matrix}, shape = [n_samples, n_features]
+            Matrix of training samples.
+
+        Returns
+        ----------
+        maj_vote : array-like, shape = [n_samples]
+            Predicted class labels.
+            
+        """
+        if self.vote == 'probability':
+            maj_vote = np.argmax(self.predict_proba(X), axis=1)
+        else:  # 'classlabel' vote
+
+            #  Collect results from clf.predict calls
+            predictions = np.asarray([clf.predict(X)
+                                      for clf in self.classifiers_]).T
+
+            maj_vote = np.apply_along_axis(
+                                      lambda x:
+                                      np.argmax(np.bincount(x,
+                                                weights=self.weights)),
+                                      axis=1,
+                                      arr=predictions)
+        maj_vote = self.lablenc_.inverse_transform(maj_vote)
+        return maj_vote
+
+    def predict_proba(self, X):
+        """ Predict class probabilities for X.
+
+        Parameters
+        ----------
+        X : {array-like, sparse matrix}, shape = [n_samples, n_features]
+            Training vectors, where n_samples is the number of samples and
+            n_features is the number of features.
+
+        Returns
+        ----------
+        avg_proba : array-like, shape = [n_samples, n_classes]
+            Weighted average probability for each class per sample.
+
+        """
+        probas = np.asarray([clf.predict_proba(X)
+                             for clf in self.classifiers_])
+        avg_proba = np.average(probas, axis=0, weights=self.weights)
+        return avg_proba
+
+    def get_params(self, deep=True):
+        """ Get classifier parameter names for GridSearch"""
+        if not deep:
+            return super(MajorityVoteClassifier, self).get_params(deep=False)
+        else:
+            out = self.named_classifiers.copy()
+            for name, step in six.iteritems(self.named_classifiers):
+                for key, value in six.iteritems(step.get_params(deep=True)):
+                    out['%s__%s' % (name, key)] = value
+            return out
+        
+        
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.neighbors import KNeighborsClassifier 
+
+clf1 =  OneVsRestClassifier(LogisticRegression(penalty='l2', 
+                          C=0.01,
+                          random_state=0))
+
+clf2 = OneVsRestClassifier(SVC(random_state=1, probability=True, kernel='rbf', C=10))
+
+clf3 = DecisionTreeClassifier(max_depth=3,
+                              criterion='entropy',
+                              random_state=0)
+
+clf4 = grid_search.best_estimator_
+
+clf5 = KNeighborsClassifier(n_neighbors=3,
+                            p=2,
+                            metric='minkowski')
+
+pipe1 = Pipeline([['sc', StandardScaler()],
+                  ['clf', clf1]])
+pipe2 = Pipeline([['sc', StandardScaler()],
+                  ['clf', clf2]])
+    
+pipe3 = Pipeline([['sc', StandardScaler()],
+                  ['clf', clf5]])
+
+clf_labels = ['Logistic Regression', 'SVC', 'Decision Tree', 'Random Forest', 'KNN']
+
+
+mv_clf = MajorityVoteClassifier(classifiers=[pipe1, pipe2, clf3, clf4, pipe3])
+
+clf_labels += ['Majority Voting']
+all_clf = [pipe1, pipe2, clf3, clf4, pipe3, mv_clf]
+
+for clf, label in zip(all_clf, clf_labels):
+    scores = cross_val_score(estimator=clf,
+                             X=x_train_std,
+                             y=y_train,
+                             cv=5,
+                             scoring='accuracy')
+    print("Accuracy: %0.2f (+/- %0.2f) [%s]"
+          % (scores.mean(), scores.std(), label))
