@@ -7,8 +7,6 @@ pp = pprint.PrettyPrinter(indent=4)
 
 from util import *
 
-# TODO ADD INTERCEPT
-
 songs = pd.read_csv("/Users/kade/LocalDocs/subset.csv")
 flat_songs = []
 i = 0

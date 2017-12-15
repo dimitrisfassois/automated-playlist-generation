@@ -40,5 +40,3 @@ def get_sentiment_score(song_id):
             return 1
         else:
             return 0
-
-#TODO. Make version of this that runs on pre-processed dataset and updates
