@@ -124,7 +124,7 @@ Apart from the audio features that were included in the million song dataset (ac
 
 \subsubsection{Latent Dirichlet Allocation}
 
-We chose all playlists for which we had an overlap of at least 30 songs with our dataset. We then tokenized and removed all stop words from the lyrics of the songs from every playlist, in order for the playlists to be treated as documents and the lyrics as words in the latent Dirichlet allocation model. Latent Dirichlet allocation is a generative statistical model that posits that the lyrics from every playlist can be explained by a fixed number of unobserved groups, which would help explain some similarity between playlists. In our case, we chose the number of common topics to be 3, and the process that the generative model describes is the following: \newline
+We chose all playlists for which we had an overlap of at least 30 songs with our dataset. We then tokenized and removed all stop words from the lyrics of the songs from every playlist, in order for the playlists to be treated as documents and the lyrics as words in the latent Dirichlet allocation model. Latent Dirichlet allocation is a generative statistical model that posits that the lyrics from every playlist can be explained by a fixed number of unobserved topics, which would help explain some similarity between playlists. In our case, we chose the number of common topics to be 3, and the process that the generative model describes is the following: \newline
 For the $M$ playlists, each of length $N_{i}$ we have the following parameters and distributions:
 \begin{enumerate}
   \item Probability $\theta_{i} \sim Dir(\alpha)$, where $Dir(\alpha)$ is a Dirichlet distribution with parameter $\alpha$ and $i \in {1, ..., M}$
@@ -136,7 +136,7 @@ For the $M$ playlists, each of length $N_{i}$ we have the following parameters a
      \end{enumerate}
 \end{enumerate}
 
-The probabilities that were output from the model for each of the three topics, were subsequently used as features by the final model.
+The probabilities that were output from the model for each of the three topics for each song were subsequently used as features by the final model.
 
 % Numbered Equation
 \begin{equation}
