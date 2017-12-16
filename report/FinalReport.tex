@@ -188,9 +188,9 @@ Another way to think about a playlists is as a path through a graph. Given two s
 
 With this approach we have to be careful as the runtime grows exponentially. Via dynamic programming, the shortest path to node v of length k is:
 \[
-  shortest_path[v][k] = \min_u \Big ( shortest_path[u][k-1] + distance[u][v] \Big)
+  short\_path[v][k] = \min_u \Big ( short\_path[u][k-1] + distance[u][v] \Big)
 \]
-Thus the algorithm is just to iterate from $0..k$ filling in the $shortest_path$ for all $v$ and taking care to avoid cycles.
+Thus the algorithm is just to iterate from $0..k$ filling in the $short\_path$ for all $v$ and taking care to avoid cycles.
 
 This runs in $O(kV^2)$ time where $V$ is the number of songs. The runtime can be further optimized by restricting the search space to only include songs in the ``neighborhood'' of the two seeds. We do this by finding their average and excluding songs that lay too far away from that centroid. In our case we use half the distance between the songs plus some constant. Thinking about this geometrically, if the data was in two dimensions then the neighborhood would be all songs within a circle where the two seeds lie opposite each other on the edge of the circle. While this effectively reduces the graph if the songs are near one another, if the songs are very different then the neighborhood is larger. Thus the runtime grows exponentially by a factor of how different the seeds are. This proved to be problematic in case where the neighborhood was extremely large, as the algorithm was painfully slow if the neighborhood was larger than around 4000 songs.
 
@@ -314,7 +314,7 @@ As a baseline we report the average distance within the training playlist. Then 
   \emph{Average Distances}
 \end{center}
 
-For these results, the primary thing we hope is that the distance from the predicted songs to the test data will be small and comparable to the distance from the predicted songs to the test data to validate that we predict similarity. This is what we see. One initially surprising thing is that the distance within the playlist is higher than the distance of the predictions to both the train and test data. This is because the playlist cannot overlap with itself, whereas the prediction may contain the actual songs on the playlists. They will have a distance of zero with themselves which brings the average down.
+For these results, the primary thing we hope is that the distance from the predicted songs to the test data will be small and comparable to the distance from the predicted songs to the test data to validate that the predictions are similar to the seed. This is what we see. One initially surprising thing is that the distance within the playlist is higher than the distance of the predictions to both the train and test data. This is because the playlist cannot overlap with itself, whereas the prediction may contain the actual songs on the playlists. They will have a distance of zero with themselves which brings the average down.
 
 \section{Conclusions and Future Work}
 
@@ -322,7 +322,7 @@ We are pleased with how both approaches to the task performed, and we attribute 
 
 Future general improvements could focus on leveraging more song characteristics and also deriving more crafted features from them in order to improve performance of the final models. This would be supported by more data gathering, in particular of genres like Hip-Hop which are underrepresented in the MSD.
 
-More specifically we think it would be quite interesting to compare the learned parameters of our various models between playlists. This way we can examine what kind of differences there are in what motivates individuals when they make playlists.
+Additionally we think it would be quite interesting to compare the learned parameters of our various models between playlists. This way we can examine what kind of differences there are in what motivates individuals when they make playlists.
 
 
 \section{Contributions}
