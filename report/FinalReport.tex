@@ -124,7 +124,7 @@ hidden_path_avg                            0.203233
 \subsection{Feature Extraction}
 \subsubsection{Latent Dirichlet Allocation}
 
-We chose all playlists for which we had an overlap of at least 30 songs with our dataset. We then tokenized and removed all stop words from the lyrics of the songs from every playlist, in order for the playlists to be treated as documents and the lyrics as words in the latent Dirichlet allocation model. Latent Dirichlet allocation is a generative statistical model that posits that the lyrics from every playlist can be explained by a fixed number of unobserved groups, which would explain similarity between some playlists. In our case, we chose the number of common topics to be 3, and the process that the generative model describes is the following: \newline
+We chose all playlists for which we had an overlap of at least 30 songs with our dataset. We then tokenized and removed all stop words from the lyrics of the songs from every playlist, in order for the playlists to be treated as documents and the lyrics as words in the latent Dirichlet allocation model. Latent Dirichlet allocation is a generative statistical model that posits that the lyrics from every playlist can be explained by a fixed number of unobserved topics, which would help explain some similarity between playlists. In our case, we chose the number of common topics to be 3, and the process that the generative model describes is the following: \newline
 For the $M$ playlists, each of length $N_{i}$ we have the following parameters and distributions:
 \begin{enumerate}
   \item Probability $\theta_{i} \sim Dir(\alpha)$, where $Dir(\alpha)$ is a Dirichlet distribution with parameter $\alpha$ and $i \in {1, ..., M}$
@@ -136,7 +136,7 @@ For the $M$ playlists, each of length $N_{i}$ we have the following parameters a
      \end{enumerate}
 \end{enumerate}
 
-The probabilities that were output from the model for each of the three topics, were subsequently used as features by the final model.
+The probabilities that were output from the model for each of the three topics for each song were subsequently used as features by the final model.
 
 % Numbered Equation
 \begin{equation}
@@ -150,9 +150,9 @@ where $t=0,{\ldots}\,,T$, and $b$ is a number greater than $1$.
 Timbre is defined as the perceived sound quality of a musical note, sound or tone. The MSD dataset contains the time sequence of the timbre feature as a vector of 12 unbounded values centered around 0. These values represent different characteristics of the spectral
 surface, ordered by degree of importance. For example, the first dimension represents the average
 loudness of the segment, the second one describes brightness, the third one describes the flatness of a sound, the fourth describes sounds with a stronger attack etc. We averaged the vector features for every time segment for each song, in order to have a time series of the actual timbre of each segment.
-We subsequently trained a hidden Markov model on the timbre sequence of a random sample of 5,000 songs. The model is fit using the EM algorithm which is a gradient-based optimization method and can therefore get stuck in local optima. For this reason we fit the model with various initializations and selected the highest scoring one.
+We subsequently trained a hidden Markov model on the timbre sequence of a random sample of 5,000 songs. The model was fit using the EM algorithm which is a gradient-based optimization method and can therefore get stuck in local optima. For this reason we fit the model with various initializations and selected the highest scoring one.
 The inferred optimal hidden states of the timbre segments of all songs were predicted by the model, employing the Viterbi algorithm.
-For each song the optimal hidden states were averaged to provide a single description of the path followed, which was used as an additional feature by the final model.
+For each song the optimal hidden states were averaged to provide a single description of the path followed, which was used as an additional feature by the final models.
 For the training data the average value of the timbre which had a hidden value of 1 was 4.96, for hidden value of 1 they had an average value of the timbre of 13.76 and for a hidden value of 2 an average of -5.35.
 
 \subsubsection{Sentiment analysis}
@@ -253,7 +253,8 @@ The ROC curve is also plotted below in figure \ref{fig:ROC_curve} which shows an
 \end{minipage}
 \end{table}%
 \newpage
-We also applied multi-class classification for 27 playlists for which we had more than 30 songs in our dataset. With this modeling technique called one-vs-all classification, one classifier is fitted for each class against all of the other classes. The training set consisted of 1265 songs, while the test set included 317 songs. Given the superior performance of the SVC model on one playlist, we optimized it in the multi-class setting using grid search and cross-validation. The grid search for the multi-class SVC yielded a model with training accuracy of 48\% and CV accuracy of 29\%. Grid search with cross-validation was also performed on a random forest model in order to estimate the number of trees in the forest, the number of features to consider for the best split, the maximum depth of the tree, the minimum number of samples required to split an internal node, the minimum number of samples required for a leaf node, whether bootstrap samples are used and what criterion between Gini impurity and entropy is used for a split. The best random forest model achieved a training accuracy of 53.4\% and cross-validated accuracy of 32.3\%. The test accuracy was 35.3\%. The feature importance from the random forest in order of usefulness can be seen in the plot below. Importance is calculated for each feature from the amount that each split improves the performance criterion, weighted by the number of observations of the node.
+We also applied multi-class classification for 9 playlists for which we had more than 50 songs in our dataset. With this modeling technique called one-vs-all classification, one classifier is fitted for each class against all of the other classes. The training set consisted of 718 songs, while the test set included 180 songs. Given the superior performance of the SVC model on one playlist, we optimized it in the multi-class setting using grid search and cross-validation. The grid search for the multi-class SVC yielded a model with training accuracy of 64.5\% and CV accuracy of 54.7\%. Grid search with cross-validation was also performed on a random forest model in order to estimate the number of trees in the forest, the number of features to consider for the best split, the maximum depth of a tree, the minimum number of samples required to split an internal node, the minimum number of samples required for a leaf node, whether bootstrap samples are used and what criterion between Gini impurity and entropy is used for a split. The best random forest model achieved a training accuracy of 68.4\% and cross-validated accuracy of 56.4\%. The test accuracy was 52.2\%. The feature importance from the random forest in order of usefulness can be seen in the plot below. Importance is calculated for each feature from the amount that each split improves the performance criterion, weighted by the number of observations of the node.
+
 %figure
 \begin{figure}[h]
   \includegraphics[width=0.5\textwidth]{feature_importance2.png}
@@ -263,8 +264,8 @@ We also applied multi-class classification for 27 playlists for which we had mor
 
 \newpage
 
-We also applied another technique, employing a random forest classifier and encoding each tree as a feature index in a new high-dimensional feature space. Then we applied a logistic regression model on this sparse, high-dimensional one-hot encoded embedding of the data. The test set accuracy achieved with this method was 30.9\%.
-The final technique that was employed was an ensemble method, namely plurality voting, which selects the playlist that received the most votes from the majority of a group of classifiers. The classifiers we implemented for plurality voting were logistic regression, SVC, decision tree, random forest and KNN. The cross-validated accuracy of the plurality voting ensemble was 33\% $\pm$ 2\%. The classifiers' cross-validated accuracy is summarized in table \ref{tab:two}.
+We also applied another technique, employing a random forest classifier and encoding each tree as a feature index in a new high-dimensional feature space. Then we applied a logistic regression model on this sparse, one-hot encoded embedding of the data. The test set accuracy achieved with this method was 51.1\%.
+The final technique that was employed was an ensemble method, namely plurality voting, which selects the playlist that received the most votes from the majority of a group of classifiers. The classifiers we implemented for plurality voting were logistic regression, SVC, decision tree, random forest and KNN. The cross-validated accuracy of the plurality voting ensemble was 55\% $\pm$ 2\%. The classifiers' cross-validated accuracy is summarized in table \ref{tab:two}.
 % Table
 \begin{table}%
 \caption{Cross-validated accuracy of classifiers in plurality voting}
@@ -273,12 +274,12 @@ The final technique that was employed was an ensemble method, namely plurality v
 \begin{center}
 \begin{tabular}{ll}
   \toprule
-  Logistic Regression    & $29\% \pm 2\%$\\
-  SVC  & $27\% \pm 1\%$\\
-  Decision Tree  & $25\% \pm 1\%$\\
-  Random Forest  & $32\% \pm 1\%$\\
-  KNN  & $22\% \pm 2\%$\\
-  Plurality Voting  & $33\% \pm 2\%$\\
+  Logistic Regression    & $51\% \pm 3\%$\\
+  SVC  & $49\% \pm 3\%$\\
+  Decision Tree  & $46\% \pm 3\%$\\
+  Random Forest  & $55\% \pm 2\%$\\
+  KNN  & $48\% \pm 2\%$\\
+  Plurality Voting  & $55\% \pm 2\%$\\
   \bottomrule
 \end{tabular}
 \end{center}
@@ -305,7 +306,7 @@ Avg distance to actual playlist: 0.231436866148
 
 \section{Conclusions}
 
-We are pleased with how both approaches to the task performed, and we attribute the accuracy to the strength of our features, both raw and derived. In particular we saw increased performance when adding popularity and lyrics data. When making a playlists, people choose songs that make them feel a certain way, and lyrics are huge part of that. Also people choose songs that they’ve actually heard of, so popularity is important. Our training data was biased towards popular songs in particular because we chose top results.
+We are pleased with how both approaches to the task performed, and we attribute the accuracy to the strength of our features, both raw and derived. In particular we saw increased performance when adding popularity and lyrics data. When making a playlists, people choose songs that make them feel a certain way, and lyrics are huge part of that. Also people choose songs that they’ve actually heard of, so popularity is important. Our training data was biased towards popular songs in particular because we chose top results. Future improvements focus on leveraging more song characteristics and also deriving crafted features from them in order to improve performance of the final models.
 
 % Bibliography
 \bibliographystyle{plain}
