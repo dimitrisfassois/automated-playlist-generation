@@ -54,7 +54,7 @@ Our project explores generating music playlists based on a song or set of seed s
 
 \section{Introduction}
 
-With the growth of music streaming services, there are now more songs than ever at music listeners fingertips. Because of this growth, the art of constructing playlists has become increasingly challenging, and discovering new music in the expanse of choices is a daunting task. For this reason, we explore methods of automatic playlist generation that can take a few songs as a seed set and generate a complete playlist for the listener. We explore this as both a classification problem and a generative graph search problem.
+With the growth of music streaming services, there are now more songs than ever at music listeners fingertips. Because of this growth, the art of constructing playlists has become increasingly challenging, and discovering new music in the expanse of choices is a daunting task. For this reason, we explore methods of automatic playlist generation that can take a few songs as a seed set and generate a complete playlist for the listener. We explore this as both a classification problem, in which one part of the playlist is the train data and the reminder the test, and as a  generative graph search problem in which we want to recommend similar songs to the provided seeds.
 
 \section{Related work}
 
@@ -237,7 +237,6 @@ The ROC curve is also plotted below in figure \ref{fig:ROC_curve} which shows an
   \label{fig:ROC_curve}
 \end{figure}
 
-\newpage
 % Table
 \begin{table}%
 \caption{SVC performance on single playlist}
@@ -258,7 +257,7 @@ The ROC curve is also plotted below in figure \ref{fig:ROC_curve} which shows an
  \emph{Precision scores for SVC model}
 \end{minipage}
 \end{table}%
-\newpage
+
 We also applied multi-class classification for 9 playlists for which we had more than 50 songs in our dataset. With this modeling technique called one-vs-all classification, one classifier is fitted for each class against all of the other classes. The training set consisted of 718 songs, while the test set included 180 songs. Given the superior performance of the SVC model on one playlist, we optimized it in the multi-class setting using grid search and cross-validation. The grid search for the multi-class SVC yielded a model with training accuracy of 64.5\% and CV accuracy of 54.7\%. Grid search with cross-validation was also performed on a random forest model in order to estimate the number of trees in the forest, the number of features to consider for the best split, the maximum depth of a tree, the minimum number of samples required to split an internal node, the minimum number of samples required for a leaf node, whether bootstrap samples are used and what criterion between Gini impurity and entropy is used for a split. The best random forest model achieved a training accuracy of 68.4\% and cross-validated accuracy of 56.4\%. The test accuracy was 52.2\%. The feature importance from the random forest in order of usefulness can be seen in the plot below. Importance is calculated for each feature from the amount that each split improves the performance criterion, weighted by the number of observations of the node.
 
 %figure
@@ -267,8 +266,6 @@ We also applied multi-class classification for 9 playlists for which we had more
   \caption{Figure: Feature importance of random forest for multi-class prediction}
   \label{fig:ROC_curve}
 \end{figure}
-
-\newpage
 
 We also applied another technique, employing a random forest classifier and encoding each tree as a feature index in a new high-dimensional feature space. Then we applied a logistic regression model on this sparse, one-hot encoded embedding of the data. The test set accuracy achieved with this method was 51.1\%.
 The final technique that was employed was an ensemble method, namely plurality voting, which selects the playlist that received the most votes from the majority of a group of classifiers. The classifiers we implemented for plurality voting were logistic regression, SVC, decision tree, random forest and KNN. The cross-validated accuracy of the plurality voting ensemble was 55\% $\pm$ 2\%. The classifiers' cross-validated accuracy is summarized in table \ref{tab:two}.
@@ -317,10 +314,11 @@ As a baseline we report the average distance within the training playlist. Then 
   \emph{Average Distances}
 \end{center}
 
+For these results, the primary thing we hope is that the distance from the predicted songs to the test data will be small and comparable to the distance from the predicted songs to the test data to validate that we predict similarity. This is what we see. One initially surprising thing is that the distance within the playlist is higher than the distance of the predictions to both the train and test data. This is because the playlist cannot overlap with itself, whereas the prediction may contain the actual songs on the playlists. They will have a distance of zero with themselves which brings the average down.
 
 \section{Conclusions and Future Work}
 
-We are pleased with how both approaches to the task performed, and we attribute the accuracy to the strength of our features, both raw and derived. In particular we were pleased to see the importance of lyrics when making playlists proven, as that was one of our initial hypotheses. When making a playlist, people choose songs that make them feel a certain way, and lyrics are huge part of that. People also choose songs that they’ve actually heard of, so popularity is important.
+We are pleased with how both approaches to the task performed, and we attribute the accuracy to the strength of our features, both raw and derived. In particular we were pleased to see the importance of lyrics when making playlists proven, as that was one of our initial hypotheses. When making a playlist, people choose songs that make them feel a certain way, and lyrics are huge part of that. People also choose songs that they've actually heard of, so popularity is important.
 
 Future general improvements could focus on leveraging more song characteristics and also deriving more crafted features from them in order to improve performance of the final models. This would be supported by more data gathering, in particular of genres like Hip-Hop which are underrepresented in the MSD.
 
@@ -328,9 +326,9 @@ More specifically we think it would be quite interesting to compare the learned 
 
 
 \section{Contributions}
-Kade was responsible for the initial pre-processing and gathering of the dataset and the graph models. He implemented the sentiment analysis portion of feature extraction, and the baseline regression classification. He was the primary author on the various reports. He made the poster and gave the recorded the poster presentation.
+Kade was responsible for the initial pre-processing and gathering of the dataset and the graph models. He implemented the sentiment analysis portion of feature extraction and the baseline regression classification. He was the primary author on the various reports. He made the poster and gave the recorded the poster presentation.
 
-Demetrios wrote the script to augment the MSD data with Spotify features. He did the work on LDA and HMM to extract features from Lyrics and Timbre. He tested a number of different classification models and built the cross validation pipeline for choosing and evaluating the best model. This included generating the reported figures and reporting feature importance.  
+Demetrios wrote the script to augment the MSD data with Spotify features. He did the work on LDA and HMM to extract features from Lyrics and Timbre. He tested a number of different classification models and built the cross validation pipeline for choosing and evaluating the best model. This included generating the reported figures and reporting feature importance.
 
 % Bibliography
 \bibliographystyle{plain}
