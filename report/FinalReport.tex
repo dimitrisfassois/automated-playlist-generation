@@ -58,15 +58,18 @@ With the growth of music streaming services, there are now more songs than ever 
 
 \section{Related work}
 
-TODO graph \cite{Alghoniemy01anetwork}.
+Playlist generation, and the problem of music recommendation and discovery more generally, is a broad problem that has been attempted with many different approaches. Geoffray Bonnin and Dietmar Jannach \cite{Bonnin2013ACO} provide an overview of these approaches and evaluation methods. They provide an overview of simple approaches to the problem: neighborhood approaches (k-nearest-neighbors), transition probability approaches (markov chains), and popularity-based approaches (same artist's greatest hits, similar artists greatest hits).
+
+Beth Logan \cite{BethLogan} at Hewlett-Packard labs provides an overview of considering a playlist as a trajectory through a graph. When considering songs as a graph, defining a distance function is of primary importance, which Logan and Ariel Salomon \cite{LoganSalomon} have also worked on. Masoud Alghoniemy and Ahmed H. Tewfik \cite{Alghoniemy01anetwork} explore songs as a network in which playlists can be found using a network-flow model.
+
+Digging deeper into the importance of song order in playlists, Maillet et. al. \cite{Maillet09steerableplaylist} extract pairs of songs from playlists and learn transition probabilities specifically from how often that specific pair of songs shows up in sequence. Ragno, R. and Burges, C. J. C. and Herley, C. \cite{Ragno:2005:ISM:1101826.1101840} combine the previously mentioned approaches to represent songs in a graph where the edge weights are determined by how frequently to the two songs appear next to each other in the training data.
 
 \section{Dataset and Features}
 
-We combine data from a number of sources in our project. The primary source is the Million Song Dataset (MSD) \cite{msd}, and the corresponding lyrics dataset, which provides lyrics for roughly a quarter of those songs in a bag-of-words format. In addition to that we use Spotify \cite{spotify} as the source of our playlist data, as well as using their's and Last.fm's \cite{lastfm} song info to augment the data from the MSD.
+We combine data from a number of sources in our project. The primary source is the Million Song Dataset (MSD) \cite{msd}, and the corresponding lyrics dataset, which provides lyrics for roughly a quarter of those songs in a bag-of-words format. We then augment that info with audio features and popularity info from Spotify \cite{spotify}. Spotify is also the source of our playlist data.
 \\
 \begin{center} \textbf{Raw features} \end{center}
 \begin{tabular}{lll}
-Feature           & Source          \\
 Year              & MSD, Spotify    \\
 Tempo             & MSD, Spotify    \\
 Timbre            & MSD             \\
@@ -80,10 +83,10 @@ Instrumentalness  & Spotify         \\
 Liveness          & Spotify         \\
 Valence           & Spotify         \\
 \end{tabular}
-\\
+\\\\
+We crafted 3 additional features using the modeling techniques described in the next section.
 \begin{center} \textbf{Derived features} \end{center}
 \begin{tabular}{lll}
-Feature               & Source                  \\
 Sentiment             & Naive Bayes on Lyrics   \\
 Lyrics Category       & LDA on Lyrics           \\
 Timbre Hidden Value   & HMM on Timbre           \\
@@ -119,9 +122,6 @@ hidden_path_avg                            0.203233
 \end{verbatim}
 
 \subsection{Feature Extraction}
-
-Apart from the audio features that were included in the million song dataset (acousticness, tempo, instrumentalness, liveness, speechiness, valence, danceability) we also extracted the year and popularity from the Spotify API data. We also crafted 3 additional features using the modeling techniques described below.
-
 \subsubsection{Latent Dirichlet Allocation}
 
 We chose all playlists for which we had an overlap of at least 30 songs with our dataset. We then tokenized and removed all stop words from the lyrics of the songs from every playlist, in order for the playlists to be treated as documents and the lyrics as words in the latent Dirichlet allocation model. Latent Dirichlet allocation is a generative statistical model that posits that the lyrics from every playlist can be explained by a fixed number of unobserved groups, which would explain similarity between some playlists. In our case, we chose the number of common topics to be 3, and the process that the generative model describes is the following: \newline
@@ -163,45 +163,10 @@ Although it ended up not being particularly useful in the end (see the feature i
 \]
 We used Naive Bayes (with the NLTK movie review corpus as training data \cite{nltk}) to score each song as either positive or negative.
 
-
-% As Algorithm~\ref{alg:one} states, for each frequency
-% number, each node calculates a random number (${\textit{Rnd}}_{\alpha}$) for
-% itself and a random number (${\textit{Rnd}}_{\beta}$) for each of its two-hop
-% neighbors with the same pseudorandom number generator.
-
-% Algorithm
-% \begin{algorithm}[t]
-% \SetAlgoNoLine
-% \KwIn{Node $\alpha$'s ID ($ID_{\alpha}$), and node $\alpha$'s
-% neighbors' IDs within two communication hops.}
-% \KwOut{The frequency number ($FreNum_{\alpha}$) node $\alpha$ gets assigned.}
-% $index$ = 0; $FreNum_{\alpha}$ = -1\;
-% \Repeat{$FreNum_{\alpha} > -1$}{
-%         $Rnd_{\alpha}$ = Random($ID_{\alpha}$, $index$)\;
-%         $Found$ = $TRUE$\;
-%         \For{each node $\beta$ in $\alpha$'s two communication hops
-%     }{
-%       $Rnd_{\beta}$ = Random($ID_{\beta}$, $index$)\;
-%       \If{($Rnd_{\alpha} < Rnd_{\beta}$) \text{or} ($Rnd_{\alpha}$ ==
-%           $Rnd_{\beta}$ \text{and} $ID_{\alpha} < ID_{\beta}$)\;
-%       }{
-%         $Found$ = $FALSE$; break\;
-%       }
-%         }
-%      \eIf{$Found$}{
-%            $FreNum_{\alpha}$ = $index$\;
-%          }{
-%            $index$ ++\;
-%      }
-%       }
-% \caption{Frequency Number Computation}
-% \label{alg:one}
-% \end{algorithm}
-
 \section{Methods}
 \label{sec:sim}
 
-Two different methodologies were pursued. In the first one we tried different classification algorithms both for a single playlist prediction and multiclass prediction for 26 playlists. In the second TODO
+Two different methodologies were pursued. In the first, we tried different classification algorithms both for a single playlist prediction and multi-class prediction for 26 playlists. In the second, we used graph-based approaches to predict songs and measure the similarity between our predicted songs and the actual songs.
 
 \subsection{Classification}
 
@@ -210,19 +175,25 @@ We first applied binary classification using a single playlist ('60s, 70s, 80s C
 \subsection{Graph}
 
 \subsubsection{K-nearest neighbors}
-TODO
-The simplest graph approach is k nearest neighbors, which we have implemented. We represent each song as a point in 11-dimensional space according to our normalized features (all those listed above, excluding Timbre and Tags). Then we select the next songs for that playlist based on proximity to the seed. This is done repeatedly to construct the whole playlist.
+The simplest graph approach is k nearest neighbors. We represent each song as a point in n-dimensional space according to our normalized features. Then we select the next songs for that playlist based on proximity to the average (centroid) of all of the seed songs.
 
 \subsubsection{K-shortest path}
-TODO
-For the graph version problem, a particularly interesting way to think about a playlists is as a path through a graph \cite{Alghoniemy01anetwork}. With this approach, you can pick a start song and an end song, and let the algorithm find the shortest path of some predetermined length between them. We believe this and similar approaches will create compelling playlists. In particular we think these playlists will be dynamic and able to "tell a story" more so than playlists that are just clusters of songs.
+
+Another way to think about a playlists is as a path through a graph. Given two songs, we construct a playlist as the shortest path of length k between them. This is particularly intriguing if the two seed songs are very different.
+
+With this approach we have to be careful as the runtime grows exponentially. Via dynamic programming, the shortest path to node v of length k is:
+\[
+  path[v][k] = \min_u \Big ( path[u][k-1] + distance[u][v] \Big)
+\]
+
+This runs in $O(kV^2)$ time where $V$ is the number of songs. The runtime can be further optimized by restricting the search space to only include songs in the ``neighborhood'' of the two seeds. We do this by finding their average and excluding songs that lay too far away from that centroid. In our case we use half the distance between the songs plus some constant. Thinking about this geometrically, if the data was in two dimensions then the neighborhood would be all songs within a circle where the two seeds lie opposite each other on the edge of the circle. While this effectively reduces the graph if the songs are near one another, if the songs are very different then the neighborhood is larger. So runtime grows exponentially by a factor of how different the seeds are.
 
 \section{Results}
 
 Results for the two main methodologies followed are presented below.
 
 \subsection{Classification}
-The logistic regression model achieved training accuracy of 95.9\% and CV accuracy of 94.8\%. The SVC outperformed the logistic regression model, with the best model achieving training accuracy of 96.9\% and CV accuracy of 95.9\%. The best model's parameters used a linear kernel with regularization. The final test accuracy for the SVC was 94.1\%. .
+The logistic regression model achieved training accuracy of 95.9\% and CV accuracy of 94.8\%. The SVC outperformed the logistic regression model, with the best model achieving training accuracy of 96.9\% and CV accuracy of 95.9\%. The best model's parameters used a linear kernel with regularization. The final test accuracy for the SVC was 94.1\%.
 The learning curve for the svm model is presented below in figure \ref{fig:learning_curve} and it shows that it generalizes well over unseen data.
 \newline
 
@@ -316,11 +287,13 @@ The final technique that was employed was an ensemble method, namely plurality v
  \emph{Plurality voting CV performance}
 \end{minipage}
 \end{table}%
-\newpage
 
 \subsection{Graph}
 
-TODO
+For our graph approaches we report a number of distances. In each case the distances have been normalized so that the maximum possible distance between any two songs would be 1. These results are averaged over
+40 playlists in the case of k-nearest-neighbors, and 20 playlists in the shortest-path approach (some playlists were excluded for performance reasons). For each playlist we split it 75/25 into train/test data.
+
+As a baseline we report the average distance within the training set. Then we report the average distance from our k-nearest-neighbors predictions to the positive train data (the seed songs), followed by the average distance to the positive test data (the remaining songs on the playlist)
 
 Baseline: Avg distance within train set:          0.241749220274
 Avg distance of prediction to positive train set: 0.191966891286
